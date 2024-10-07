@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Navbar from "./components/shared/Navbar";
 import Footer from "./components/shared/Footer";
+import NavigationPage from "./components/shared/Navbar";
 
 
 
@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
    <div>
-    <Navbar/>
+    <NavigationPage/>
     {children}
     <Footer/>
    </div>
