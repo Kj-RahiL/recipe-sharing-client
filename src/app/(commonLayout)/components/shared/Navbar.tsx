@@ -1,8 +1,8 @@
 "use client";
 import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, NavbarMenu, NavbarMenuItem, NavbarMenuToggle} from "@nextui-org/react";
-import { AcmeLogo } from "./AcmeLogo";
 import { useState } from "react";
 import { ThemeSwitcher } from "./ThemeSwitcher";
+import { NavLogo } from "./NavLogo";
 
 const NavigationPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,7 +20,7 @@ const NavigationPage = () => {
     "Log Out",
   ];
   return (
-    <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen} >
+    <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen} className="mx-auto container">
       <NavbarContent className="sm:hidden" justify="start">
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -29,15 +29,13 @@ const NavigationPage = () => {
 
       <NavbarContent className="sm:hidden pr-3" justify="center">
         <NavbarBrand>
-          <AcmeLogo />
-          <p className="font-bold text-inherit">ACME</p>
+          <NavLogo />
         </NavbarBrand>
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarBrand>
-          <AcmeLogo />
-          <p className="font-bold text-inherit">ACME</p>
+        <NavLogo />
         </NavbarBrand>
         <NavbarItem>
           <Link color="foreground" href="#">

@@ -1,10 +1,11 @@
+import { Banner } from "./components/home/Banner";
 
-const page = () => {
+const HomePage = () => {
     return (
         <div>
-            COmmn lay out page
+          <Banner/>
         </div>
     );
 };
 
-export default page;
+export default HomePage;

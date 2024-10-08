@@ -1,4 +1,4 @@
-// app/components/ThemeSwitcher.tsx
+
 "use client";
 
 import { Switch } from "@nextui-org/react";
@@ -20,10 +20,10 @@ export function ThemeSwitcher() {
     <Switch
       defaultSelected
       size="lg"
-      startContent={<SunIcon />}
-      endContent={<MoonIcon />}
-      isSelected={theme === "dark" ? true : false}
-      onValueChange={(e) => setTheme(e ? "dark" : "light")}
+      startContent={<MoonIcon />}
+      endContent={<SunIcon />}
+      isSelected={theme === "light" ? true : false}
+      onValueChange={(e) => setTheme(e ? "light" : "dark")}
     />
   );
 }
