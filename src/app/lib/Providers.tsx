@@ -3,14 +3,24 @@ import * as React from "react";
 
 import { NextUIProvider } from "@nextui-org/react";
 
-import {ThemeProvider as NextThemesProvider} from "next-themes";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { Provider } from "react-redux";
+import { makeStore, persistor } from "../redux/store";
+import { PersistGate } from "redux-persist/integration/react";
+import UserProvider from "@/context/user.provider";
+
+const store = makeStore();
 
 function Providers({ children }: { children: React.ReactNode }) {
   // 2. Wrap NextUIProvider at the root of your app
   return (
     <NextUIProvider>
       <NextThemesProvider attribute="class" defaultTheme="dark">
-        {children}
+      <UserProvider>
+        <PersistGate loading={null} persistor={persistor}>
+          <Provider store={store}> {children}</Provider>
+        </PersistGate>
+        </UserProvider>
       </NextThemesProvider>
     </NextUIProvider>
   );

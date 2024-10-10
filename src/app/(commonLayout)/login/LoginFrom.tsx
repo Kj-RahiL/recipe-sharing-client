@@ -1,13 +1,41 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Link from "next/link";
 import bgLogin from "../../../../public/assets/recipe2.jpg";
 import loginAni from "../../../../public/animation/Animation - 1701011933091.json";
 import Lottie from "lottie-react";
+import nexiosInstance from "@/config/nexios.config";
+import { toast } from "sonner";
+import { verifyToken } from "@/app/utils/verifyToken";
+import { useRouter } from "next/navigation";
+import { loginUser } from "@/services/AuthService";
 
 const LoginFrom = () => {
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const router = useRouter();
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Login form submitted");
+    const form = e.target as HTMLFormElement;
+    const userInfo = {
+      email: form.email.value,
+      password: form.password.value,
+    };
+    const toastId = toast.loading("Logging in");
+    try {
+     const res = await loginUser(userInfo)
+     console.log(res)
+      if (!(res?.success)) {
+        throw new Error(res?.message || "Failed to login user" );
+      }else{
+        toast.success(res?.message || "Logged In Successful", { id: toastId, duration: 4000 });
+        router.push(`/`);
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "login failed", {
+        id: toastId,
+        duration: 4000,
+        style: { color: "red" },
+      });
+    }
   };
 
   return (

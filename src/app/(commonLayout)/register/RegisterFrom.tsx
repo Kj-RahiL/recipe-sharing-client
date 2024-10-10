@@ -1,17 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React from "react";
+import { loginUser, logout, registerUser } from "@/services/AuthService";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import bgLogin from "../../../../public/assets/recipe2.jpg";
+import bgLogin from "../../../../public/assets/recipe2.jpg"
+
+;
 import Link from "next/link";
+const image_hosting_key = process.env.NEXT_PUBLIC_IMAGE_HOSTING_API;
+const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
 const RegisterFrom = () => {
-  // const dispatch = useAppDispatch();
-  // const [signUp, { isLoading, error }] = useSignUpMutation();
-  // const [login] = useLogInMutation();
-  // console.log({ error });
-  // const navigate = useNavigate();
+  const router = useRouter();
   const {
     register,
     formState: { errors },
@@ -19,39 +20,57 @@ const RegisterFrom = () => {
   } = useForm();
 
   const onSubmit = async (data: any) => {
+    const formData = new FormData();
+    formData.append("image", data.image[0]);
     const toastId = toast.loading("Signing up...");
+    await logout()
+    try {
+      const response = await fetch(image_hosting_api, {
+        method: "POST",
+        body: formData,
+      });
 
-    // try {
-    //   dispatch(logOut());
-    //   const response = await signUp(data).unwrap();
-    //   console.log(response);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const resData = await response.json();
 
-    //   toast.success(response.message, {
-    //     id: toastId,
-    //     duration: 4000,
-    //     style: { color: "green" },
-    //   });
-    //   navigate("/");
+      if (resData.success) {
+        const userData: any = {
+          name: data.name,
+          email: data.email,
+          password: data.password,
+          image: resData.data.display_url,
+          phone: data.phone,
+        };
+        const response = await registerUser(userData);
+        console.log(response)
+        if (!response?.success) {
+          throw new Error(response?.message || "Registration failed")
+        }
+        toast.success(response?.message, {
+          id: toastId,
+          duration: 4000,
+          style: { color: "green" },
+        });
 
-    //   // login
-    //   const userInfo = {
-    //     email: data.email,
-    //     password: data.password,
-    //   };
-    //   const res = await login(userInfo).unwrap();
-    //   const token = res.token.split(" ")[1];
-    //   const user = verifyToken(token);
-    //   dispatch(setUser(data));
+        // router.push("/");
 
-    //   dispatch(setLoginUser({ user, token }));
-    // } catch (err: any) {
-    //   toast.error(`Error: ${err.data.message || "Sign-up failed"}`, {
-    //     id: toastId,
-    //     duration: 4000,
-    //     style: { color: "red" },
-    //   });
-    //   console.log({ err });
-    // }
+        // login
+        const userInfo = {
+          email: data.email,
+          password: data.password,
+        };
+        await loginUser(userInfo)
+      }
+    } catch (err: any) {
+      console.log("hi", { err });
+      toast.error(`Error: ${err.message || "Sign-up failed"}`, {
+        id: toastId,
+        duration: 4000,
+        style: { color: "red" },
+      });
+    }
   };
 
   return (
@@ -161,7 +180,7 @@ const RegisterFrom = () => {
                 })}
                 type="password"
                 placeholder="Your Password"
-                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#13ffaa]"
+                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#13ffaa] text-black"
               />
               {errors.password?.type === "required" && (
                 <p className="text-red-600">Password is required</p>
