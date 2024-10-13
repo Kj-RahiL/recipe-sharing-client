@@ -1,9 +1,6 @@
-import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "../redux/features/Auth/authSlice";
-import registerSlice from "../redux/features/user/registerSlice";
-import storage from "redux-persist/lib/storage";
+import { configureStore } from '@reduxjs/toolkit';
+import { baseApi } from './api/baseApi';
 import {
-  persistStore,
   persistReducer,
   FLUSH,
   REHYDRATE,
@@ -11,38 +8,32 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from "redux-persist";
-import { baseApi } from "./api/baseApi";
+  persistStore,
+} from 'redux-persist';
+import authReducer from './features/Auth/authSlice';
+import storage from 'redux-persist/lib/storage';
 
 const persistConfig = {
-  key: "root",
+  key: 'auth',
   storage,
 };
+const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 
-const persistedReducer = persistReducer(persistConfig, authReducer);
+export const store = configureStore({
+  reducer: {
+    [baseApi.reducerPath]: baseApi.reducer,
+    auth: persistedAuthReducer,
+  },
+  middleware: (getDefaultMiddlewares) =>
+    getDefaultMiddlewares({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(baseApi.middleware),
+});
 
-export const makeStore = () => {
-  return configureStore({
-    reducer: {
-      [baseApi.reducerPath]: baseApi.reducer,
-      register:registerSlice,
-      auth: persistedReducer,
-    },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: {
-          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-        },
-      }).concat(baseApi.middleware),
-  });
-};
+export type RootState = ReturnType<typeof store.getState>;
 
-// Infer the type of makeStore
-export type AppStore = ReturnType<typeof makeStore>;
+export type AppDispatch = typeof store.dispatch;
 
-export type RootState = ReturnType<AppStore["getState"]>;
-export type AppDispatch = AppStore["dispatch"];
-
-// Initialize the store first
-const store = makeStore();
 export const persistor = persistStore(store);

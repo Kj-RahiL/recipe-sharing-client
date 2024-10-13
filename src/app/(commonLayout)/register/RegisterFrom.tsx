@@ -8,6 +8,7 @@ import bgLogin from "../../../../public/assets/recipe2.jpg"
 
 ;
 import Link from "next/link";
+import { revalidateTag } from "next/cache";
 const image_hosting_key = process.env.NEXT_PUBLIC_IMAGE_HOSTING_API;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
@@ -48,6 +49,7 @@ const RegisterFrom = () => {
         if (!response?.success) {
           throw new Error(response?.message || "Registration failed")
         }
+        revalidateTag("Register")
         toast.success(response?.message, {
           id: toastId,
           duration: 4000,

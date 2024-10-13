@@ -1,20 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
-
-import { verifyToken } from "@/app/utils/verifyToken";
 import nexiosInstance from "@/config/nexios.config";
 import { jwtDecode } from "jwt-decode";
+import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
 export const registerUser = async (userData: any) => {
-  const { data } = await nexiosInstance.post("/auth/register", userData);
+  const { data } = await nexiosInstance.post("/auth/register", userData, {
+    next: {tags: ["Register"]}
+  });
   return data;
 };
 
 export const loginUser = async (userData: any) => {
-  const { data } = await nexiosInstance.post("/auth/login", userData);
+  const { data } = await nexiosInstance.post("/auth/login", userData, {
+    next: {tags: ["Login"]}
+  });
   if (data?.success) {
-    cookies().set("accessToken", data?.token, { httpOnly: true });
+    cookies().set("accessToken", data?.token);
+    revalidateTag("Login")
     return data;
   }
 };
@@ -27,12 +31,12 @@ export const getCurrentUser = async () => {
     if (accessToken) {
       decodedToken = await jwtDecode(accessToken);}
   return {
-    id: decodedToken.id,
-    name: decodedToken.name,
-    email: decodedToken.email,
-    image: decodedToken.image,
-    role: decodedToken.role,
-    status: decodedToken.status,
+    id: decodedToken?.id,
+    name: decodedToken?.name,
+    email: decodedToken?.email,
+    image: decodedToken?.image,
+    role: decodedToken?.role,
+    status: decodedToken?.status,
   }
 };
 

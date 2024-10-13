@@ -1,5 +1,5 @@
 "use client";
-import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, NavbarMenu, NavbarMenuItem, NavbarMenuToggle, Button} from "@nextui-org/react";
+import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, NavbarMenu, NavbarMenuItem, NavbarMenuToggle, Button} from "@nextui-org/react";
 import { useState } from "react";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { NavLogo } from "./NavLogo";
@@ -7,7 +7,6 @@ import { siteConfig } from "@/config/site";
 import NextLink from "next/link";
 import clsx from 'clsx';
 import { link as linkStyles } from "@nextui-org/theme";
-import { getCurrentUser } from "@/services/AuthService";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/context/user.provider";
 import NavbarDropDown from "./NavbarDropDown";

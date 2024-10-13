@@ -4,14 +4,15 @@ import Link from "next/link";
 import bgLogin from "../../../../public/assets/recipe2.jpg";
 import loginAni from "../../../../public/animation/Animation - 1701011933091.json";
 import Lottie from "lottie-react";
-import nexiosInstance from "@/config/nexios.config";
 import { toast } from "sonner";
-import { verifyToken } from "@/app/utils/verifyToken";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { loginUser } from "@/services/AuthService";
 
 const LoginFrom = () => {
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
   const router = useRouter();
+
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
@@ -21,13 +22,25 @@ const LoginFrom = () => {
     };
     const toastId = toast.loading("Logging in");
     try {
-     const res = await loginUser(userInfo)
-     console.log(res)
-      if (!(res?.success)) {
-        throw new Error(res?.message || "Failed to login user" );
-      }else{
-        toast.success(res?.message || "Logged In Successful", { id: toastId, duration: 4000 });
-        router.push(`/`);
+      const res = await loginUser(userInfo);
+      console.log(res);
+      if (!res?.success) {
+        throw new Error("Failed to login user");
+      } else {
+        toast.success("Logged In Successful", {
+          id: toastId,
+          duration: 4000,
+        });
+        const { role } = res?.data;
+        // Dynamic redirection based on role
+        if (role === "admin") {
+          router.push("/admin-dashboard");
+        } else if (role === "user") {
+          router.push("/dashboard");
+        } else {
+          // If role is unknown, use fallback or redirect to home
+          router.push(redirect ? redirect : "/");
+        }
       }
     } catch (error: any) {
       toast.error(error?.message || "login failed", {
