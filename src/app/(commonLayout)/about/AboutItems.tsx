@@ -13,10 +13,10 @@ const AboutItems = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-6">
-          Welcome to Chef's Circle!
+          Welcome to Chef&apos;s Circle!
         </h1>
         <p className="text-lg">
-          We are a passionate community of home cooks, culinary enthusiasts, and food lovers, all united by our love for cooking. At Chef's Circle, our mission is to create a platform where people can share their best recipes, discover new dishes, and connect with like-minded foodies.
+          We are a passionate community of home cooks, culinary enthusiasts, and food lovers, all united by our love for cooking. At Chef&apos;s Circle, our mission is to create a platform where people can share their best recipes, discover new dishes, and connect with like-minded foodies.
         </p>
       </div>
 
@@ -49,7 +49,7 @@ const AboutItems = () => {
           Join Us on This Journey
         </h2>
         <p className="leading-relaxed">
-          At Chef's Circle, we believe that cooking is more than just making food—it’s about sharing experiences, building connections, and celebrating the joy of food. Join us, and let’s cook, share, and grow together!
+          At Chef&apos;s Circle, we believe that cooking is more than just making food—it’s about sharing experiences, building connections, and celebrating the joy of food. Join us, and let’s cook, share, and grow together!
         </p>
       </div>
     </div>

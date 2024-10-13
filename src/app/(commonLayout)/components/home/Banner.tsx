@@ -54,7 +54,7 @@ export const Banner = () => {
             theme === "dark" ? "text-gray-200" : "text-gray-700"
           }`}
         >
-          A community-driven platform for passionate home cooks and professional chefs to share, explore, and master new recipes. Join now and start cooking with Chef's Circle.
+          A community-driven platform for passionate home cooks and professional chefs to share, explore, and master new recipes. Join now and start cooking with Chef;s Circle.
         </p>
 
         {/* Call to Action Button */}

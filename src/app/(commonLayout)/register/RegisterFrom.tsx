@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { loginUser, logout, registerUser } from "@/services/AuthService";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import bgLogin from "../../../../public/assets/recipe2.jpg"
@@ -13,7 +12,6 @@ const image_hosting_key = process.env.NEXT_PUBLIC_IMAGE_HOSTING_API;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
 const RegisterFrom = () => {
-  const router = useRouter();
   const {
     register,
     formState: { errors },

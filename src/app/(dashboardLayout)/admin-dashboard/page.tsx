@@ -1,8 +1,9 @@
+import FeedCard from "@/app/(commonLayout)/components/feed/FeedCard";
 
 const AdminDashboard = () => {
     return (
-        <div>
-            <h2>hello admin</h2>
+        <div className="mx-10">
+            <FeedCard/>
         </div>
     );
 };

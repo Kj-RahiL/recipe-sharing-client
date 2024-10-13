@@ -11,6 +11,7 @@
   "dependencies": {
     "@nextui-org/navbar": "^2.0.37",
     "@nextui-org/react": "^2.4.8",
+    "@nextui-org/spinner": "^2.0.34",
     "@nextui-org/system": "^2.2.6",
     "@nextui-org/theme": "^2.2.11",
     "@react-three/drei": "^9.114.2",
@@ -28,6 +29,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
+    "react-infinite-scroll-component": "^6.1.0",
     "redux-persist": "^6.0.0",
     "sonner": "^1.5.0"
   },

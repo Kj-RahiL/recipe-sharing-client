@@ -2,7 +2,6 @@
 
 import { Accordion, AccordionItem } from '@nextui-org/react';
 import { Upload } from 'lucide-react';
-import React, { useState } from 'react';
 
 
 interface Props {
@@ -11,7 +10,7 @@ interface Props {
   items: string[];
 }
 const CollapseItems = ({icon, items, title}: Props) => {
-  const [open, setOpen] = useState(false);
+
     return (
         <div className="flex gap-4 h-full items-center cursor-pointer">
         <Accordion className="px-0">

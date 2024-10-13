@@ -6,3 +6,17 @@ export interface IUser {
     image: string;
     status: string;
   }
+
+  
+ export interface RegisterResponse {
+    success: boolean;
+    message: string;
+    data?: IUser;
+  }
+  
+ export interface LoginResponse {
+    success: boolean;
+    message:string;
+    token?: string;
+    data: IUser;
+  }

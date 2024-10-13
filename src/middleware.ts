@@ -1,4 +1,4 @@
-import { url } from "inspector";
+
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { decode } from "./helpers/jwtHelpers";
@@ -54,6 +54,7 @@ export const config = {
   matcher: [
     "/login",
     "/register",
+    "/feed",
     "/dashboard/:page*",
     "/admin-dashboard/:page*",
   ],

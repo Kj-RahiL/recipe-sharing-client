@@ -36,7 +36,7 @@ nexiosInstance.interceptors.response.use(
 
       try {
         const res = await getNewAccessToken(); 
-        const accessToken = res.data.accessToken;
+        const accessToken = res.token;
         config.headers["Authorization"] = `Bearer ${accessToken}`; 
      
         return config
