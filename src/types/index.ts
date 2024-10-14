@@ -42,8 +42,8 @@ export interface IUser {
     difficulty: string;
     ingredients: Ingredient[];
     steps: Step[];
-    category: string[];
-    tags: string[];
+    category: string;
+    tags: string;
     isPublished: boolean;
     isPremium: boolean;
   }

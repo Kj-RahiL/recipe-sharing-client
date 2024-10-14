@@ -1,11 +1,9 @@
-import React from 'react';
+import ProfileCard from "@/app/(commonLayout)/components/Profile/ProfileCard";
+
+
 
 const ProfilePage = () => {
-    return (
-        <div>
-            <h2>prrrrrrrrrro</h2>
-        </div>
-    );
+  return <ProfileCard />;
 };
 
 export default ProfilePage;

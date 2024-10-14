@@ -19,8 +19,8 @@ const RecipeForm: React.FC = () => {
     defaultValues: {
       ingredients: [{ name: "", quantity: "", type: "" }],
       steps: [{ description: "", duration: '' }],
-      category: [],
-      tags: [],
+      category: "",
+      tags: "",
       isPublished: true,
       isPremium: false,
     },
@@ -36,7 +36,7 @@ const RecipeForm: React.FC = () => {
   const onSubmit: SubmitHandler<RecipeFormData> = async(data) => {
     const processedData = {
         ...data,
-        category: data.category.split(',').map((cat: any) => cat.trim()), 
+        category: data.category.split(',').map((cat: any) => cat.trim()) as string[], 
         tags: data.tags.split(',').map((tag: any) => tag.trim()),
         author: user?.id, 
       };

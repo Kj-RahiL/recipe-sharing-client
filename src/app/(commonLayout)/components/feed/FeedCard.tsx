@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
+import { useRouter } from "next/navigation"; // Import useRouter
 import { MessageCircle, Share2, ThumbsUp, ThumbsDown } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { getAllRecipe } from "@/services/RecipeService";
@@ -13,7 +13,8 @@ const FeedCard = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const { theme } = useTheme(); // Get the current theme
+  const { theme } = useTheme();
+  const router = useRouter(); // Router for navigation
 
   const fetchFeeds = async () => {
     if (loading || !hasMore) return;
@@ -40,20 +41,29 @@ const FeedCard = () => {
     fetchFeeds();
   }, [page]);
 
+  const handleFeedClick = (id: string) => {
+    router.push(`/feed/${id}`); // Navigate to the feed details page
+  };
+
   return (
     <InfiniteScroll
       dataLength={feeds.length}
       next={() => setPage((prev) => prev + 1)}
       hasMore={hasMore}
       loader={<p className="text-center">Loading more feeds...</p>}
-      endMessage={<p className="text-center"><b>You have seen it all!</b></p>}
+      endMessage={
+        <p className="text-center">
+          <b>You have seen it all!</b>
+        </p>
+      }
     >
       {feeds.map((feed) => (
         <div
           key={feed._id}
-          className={`p-4 mb-10 rounded-lg shadow-md ${
+          className={`p-4 mb-10 rounded-lg shadow-md cursor-pointer ${
             theme === "dark" ? "bg-gray-900 text-white" : "bg-white"
           }`}
+          onClick={() => handleFeedClick(feed._id)} // Navigate on click
         >
           <div className="flex items-center mb-4">
             <Image
@@ -75,13 +85,15 @@ const FeedCard = () => {
               alt={feed?.title}
               width={600}
               height={300}
-              className="rounded-lg"
+              className="rounded-lg h-96"
             />
-            <span className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-              Made it ✅
-            </span>
           </div>
-
+          <div>
+            <p className="font-bold text-lg">{feed?.title}</p>
+            <p className="text-gray-500 text-sm">{feed?.description}</p>
+            <p>{feed.cookingTime}</p>
+            <p>{feed.difficulty}</p>
+          </div>
           <div className="flex justify-around mt-4 text-gray-600">
             <button className="flex items-center space-x-1">
               <ThumbsUp className="w-5 h-5" />
