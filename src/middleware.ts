@@ -18,10 +18,7 @@ export async function middleware(request: NextRequest) {
     } else {
       //   return NextResponse.redirect(new URL("/login", request.url));
       return NextResponse.redirect(
-        new URL(
-          pathname ? `/login?redirect=${pathname}` : "/login",
-          request.url
-        )
+        new URL(`/login?redirect=${encodeURIComponent(pathname)}`, request.url)
       );
     }
   }
@@ -46,6 +43,9 @@ export async function middleware(request: NextRequest) {
   }
   if (role === "user" && pathname.match(/^\/dashboard/)) {
     return NextResponse.next();
+  }
+  if (pathname === "/feed") {
+    return NextResponse.next(); 
   }
   return NextResponse.redirect(new URL("/", request.url));
 }

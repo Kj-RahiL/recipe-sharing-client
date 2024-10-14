@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import UserLayout from "./layout/UserLayout";
+import UserLayout from "./profile/layout/UserLayout";
 
 export const metadata: Metadata = {
   title: "Recipe Sharing Community",

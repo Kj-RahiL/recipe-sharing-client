@@ -38,7 +38,7 @@ const NavbarDropDown = () => {
           <p className="font-semibold">{user?.email}</p>
         </DropdownItem>
         <DropdownItem key="dashboard" href={`${user?.role === 'admin'}` ? "/admin-dashboard": "/dashboard"}>Dashboard</DropdownItem>
-        <DropdownItem key="settings">My Settings</DropdownItem>
+        <DropdownItem key="settings">My Profile</DropdownItem>
 
         <DropdownItem
           key="logout"

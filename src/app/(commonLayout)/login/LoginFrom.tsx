@@ -35,12 +35,15 @@ const LoginFrom = () => {
         });
         const { role } = res?.data as IUser;
         // Dynamic redirection based on role
-         if (role === "admin") {
+        if(redirect){
+          router.push(redirect )
+        }
+         else if (role === "admin") {
           router.push("/admin-dashboard");
         } else if (role === "user") {
           router.push("/dashboard");
         }else{
-          router.push(redirect ? redirect : '/feed')
+          router.push('/')
         }
       }
     } catch (error: any) {

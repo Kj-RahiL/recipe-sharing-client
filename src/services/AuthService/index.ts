@@ -7,6 +7,7 @@ import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
 export const registerUser = async (userData: any) => {
+  
   const { data } = await nexiosInstance.post<RegisterResponse>("/auth/register", userData, {
     next: {tags: ["Register"]}
   });

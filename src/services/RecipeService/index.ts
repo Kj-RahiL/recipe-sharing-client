@@ -2,8 +2,25 @@
 "use server";
 
 import nexiosInstance from "@/config/nexios.config";
+import { RecipeResponse } from "@/types";
 
-export const getAllRecipe = async (page?: number) => {
+export const createRecipe = async (recipeData:any) => {
+  const { data } = await nexiosInstance.post<RecipeResponse>(`/recipe`,  recipeData, {
+    cache: "no-store",
+  });
+  console.log(data);
+  return data;
+};
+
+// export const getAllRecipe = async (queryParams: Record<string, any>) => {
+//   const queryString = new URLSearchParams(queryParams).toString();
+//   const { data } = await nexiosInstance.get(`/recipe?page=${queryString}`, {
+//     cache: "no-store",
+//   });
+//   console.log(data);
+//   return data;
+// };
+export const getAllRecipe = async (page:number) => {
   const { data } = await nexiosInstance.get(`/recipe?page=${page}`, {
     cache: "no-store",
   });
