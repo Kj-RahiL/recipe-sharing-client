@@ -1,5 +1,5 @@
 "use client";
-import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, NavbarMenu, NavbarMenuItem, NavbarMenuToggle, Button, Spinner} from "@nextui-org/react";
+import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, NavbarMenu, NavbarMenuItem, NavbarMenuToggle, Button} from "@nextui-org/react";
 import { useState } from "react";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { NavLogo } from "./NavLogo";
@@ -14,11 +14,11 @@ import NavbarDropDown from "./NavbarDropDown";
 const NavigationPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
-  const { user, isLoading } = useUser();
+  const { user,  } = useUser();
   // console.log(user)
-if(isLoading){
-  return  <Spinner label="Loading..." color="warning" />
-}
+// if(isLoading){
+//   return  <Spinner label="Loading..." color="success" />
+// }
   
   return (
     <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen} className="mx-auto container">

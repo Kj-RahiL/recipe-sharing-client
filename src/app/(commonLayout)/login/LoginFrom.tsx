@@ -4,14 +4,15 @@ import Link from "next/link";
 import bgLogin from "../../../../public/assets/recipe2.jpg";
 import loginAni from "../../../../public/animation/Animation - 1701011933091.json";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { loginUser } from "@/services/AuthService";
 import { IUser } from "@/types";
 import dynamic from "next/dynamic";
-
 // Load Lottie dynamically to avoid SSR issues
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 const LoginFrom = () => {
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -34,12 +35,12 @@ const LoginFrom = () => {
         });
         const { role } = res?.data as IUser;
         // Dynamic redirection based on role
-        if (role === "admin") {
+         if (role === "admin") {
           router.push("/admin-dashboard");
         } else if (role === "user") {
           router.push("/dashboard");
         }else{
-          router.push("/feed")
+          router.push(redirect ? redirect : '/feed')
         }
       }
     } catch (error: any) {
