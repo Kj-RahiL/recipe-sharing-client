@@ -1,5 +1,5 @@
-import React from 'react';
-import FeedDetails from './FeedDetails';
+import FeedDetails from "./FeedDetails";
+
 
 const RecipeDetails = () => {
     return (

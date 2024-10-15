@@ -27,6 +27,7 @@ import {
   
     const handleUser = async () => {
       const user = await getCurrentUser();
+      console.log(user, 'uuuuuuuuuuuuuuuuuu')
       setUser(user);
       setIsLoading(false);
     };

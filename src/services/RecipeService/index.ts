@@ -24,7 +24,15 @@ export const getAllRecipe = async (page?:number) => {
   const { data } = await nexiosInstance.get(`/recipe?page=${page}`, {
     cache: "no-store",
   });
-  console.log(data);
+  // console.log(data);
+  return data;
+};
+
+export const getRecipeById = async (id: string) => {
+  const { data } = await nexiosInstance.get<any>(`/recipe/${id}`, {
+    cache: "no-store",
+  });
+  console.log(JSON.stringify(data, null, 2), 'getRecipeById'); 
   return data;
 };
 

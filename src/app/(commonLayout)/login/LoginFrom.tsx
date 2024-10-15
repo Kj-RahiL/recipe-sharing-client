@@ -1,72 +1,60 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import Link from "next/link";
 import bgLogin from "../../../../public/assets/recipe2.jpg";
 import loginAni from "../../../../public/animation/Animation - 1701011933091.json";
-import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
-import { loginUser } from "@/services/AuthService";
-import { IUser } from "@/types";
 import dynamic from "next/dynamic";
+import { useUserLogin } from "@/hooks/auth.hook";
+import { useUser } from "@/context/user.provider";
+import { useEffect } from "react";
+
 // Load Lottie dynamically to avoid SSR issues
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
-const LoginFrom = () => {
+
+const LoginForm = () => {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
   const router = useRouter();
+  const { mutate: handleUserLogin, isPending, isSuccess } = useUserLogin();
+  const { setIsLoading: userLoading } = useUser();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
+
     const userInfo = {
       email: form.email.value,
       password: form.password.value,
     };
-    const toastId = toast.loading("Logging in");
-    try {
-      const res = await loginUser(userInfo);
-      console.log(res);
-      if (!res?.success) {
-        throw new Error("Failed to login user");
-      } else {
-        toast.success("Logged In Successful", {
-          id: toastId,
-          duration: 4000,
-        });
-        const { role } = res?.data as IUser;
-        // Dynamic redirection based on role
-        if(redirect){
-          router.push(redirect )
-        }
-         else if (role === "admin") {
-          router.push("/admin-dashboard");
-        } else if (role === "user") {
-          router.push("/dashboard");
-        }else{
-          router.push('/')
-        }
-      }
-    } catch (error: any) {
-      toast.error(error?.message || "login failed", {
-        id: toastId,
-        duration: 4000,
-        style: { color: "red" },
-      });
-    }
+
+    handleUserLogin(userInfo);
+    userLoading(true);
   };
+
+  useEffect(() => {
+    if (!isPending && isSuccess) {
+      if (redirect) {
+        router.push(redirect);
+      } else {
+        router.push("/feed");
+      }
+    }
+  }, [isPending, isSuccess]);
 
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: `url(${bgLogin.src})` }}
     >
-      <div className="flex flex-col lg:flex-row items-center justify-center w-full max-w-5xl p-8  backdrop-blur-md">
+      <div className="flex flex-col lg:flex-row items-center justify-center w-full max-w-5xl p-8 backdrop-blur-md">
         {/* Lottie animation section */}
         <div className="w-full lg:w-1/2 hidden lg:block">
           <Lottie animationData={loginAni} className="w-full" />
         </div>
 
-        {/* Form section with wider width */}
+        {/* Form section */}
         <div className="w-full lg:w-2/3 p-8 rounded border border-gray-500/30 shadow">
           <form onSubmit={handleLogin} className="space-y-4">
             <h1 className="text-3xl font-bold text-white mb-4 text-center">
@@ -81,7 +69,7 @@ const LoginFrom = () => {
               <input
                 type="email"
                 name="email"
-                placeholder="email"
+                placeholder="Enter your email"
                 className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#13ffaa]"
                 required
               />
@@ -95,7 +83,7 @@ const LoginFrom = () => {
               <input
                 type="password"
                 name="password"
-                placeholder="password"
+                placeholder="Enter your password"
                 className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#13ffaa]"
                 required
               />
@@ -111,7 +99,9 @@ const LoginFrom = () => {
 
             {/* Submit Button */}
             <div className="form-control mt-6">
-              <button className="button text-white w-full">Login</button>
+              <button className="button text-white w-full" type="submit">
+                {isPending ? "Logging in..." : "Login"}
+              </button>
             </div>
 
             {/* Signup Link */}
@@ -136,4 +126,4 @@ const LoginFrom = () => {
   );
 };
 
-export default LoginFrom;
+export default LoginForm;
