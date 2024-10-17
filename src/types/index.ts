@@ -1,10 +1,25 @@
 export interface IUser {
-    id: string;
+    id?: string;
     name: string;
     role: string;
     email: string;
     image: string;
     status: string;
+    following:string[];
+    followers:string[];
+    bio?: string;
+  }
+
+export interface TUser {
+    _id?: string;
+    name: string;
+    role: string;
+    email: string;
+    image: string;
+    status: string;
+    following:string[];
+    followers:string[];
+    bio?: string;
   }
 
   

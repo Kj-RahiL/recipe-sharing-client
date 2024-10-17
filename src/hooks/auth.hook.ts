@@ -1,4 +1,4 @@
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { loginUser, registerUser } from "@/services/AuthService";
 import { useMutation } from "@tanstack/react-query";

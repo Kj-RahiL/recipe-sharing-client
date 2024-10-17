@@ -7,39 +7,50 @@ import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
 export const registerUser = async (userData: any) => {
-  
-  const { data } = await nexiosInstance.post<RegisterResponse>("/auth/register", userData, {
-    next: {tags: ["Register"]}
-  });
+  const { data } = await nexiosInstance.post<RegisterResponse>(
+    "/auth/register",
+    userData,
+    {
+      next: { tags: ["Register"] },
+    }
+  );
   return data;
 };
 
 export const loginUser = async (userData: any) => {
-  const { data } = await nexiosInstance.post<LoginResponse>("/auth/login", userData, {
-    next: {tags: ["Login"]}
-  });
+  const { data } = await nexiosInstance.post<LoginResponse>(
+    "/auth/login",
+    userData,
+    {
+      next: { tags: ["Login"] },
+    }
+  );
   if (data?.success) {
     cookies().set("accessToken", data.token!);
-    revalidateTag("Login")
+    revalidateTag("Login");
     return data;
   }
 };
 
 export const getCurrentUser = async () => {
-    const accessToken = cookies().get("accessToken")?.value;
+  const accessToken = cookies().get("accessToken")?.value;
 
-    let decodedToken = null;
-  
-    if (accessToken) {
-      decodedToken = await jwtDecode(accessToken);}
+  let decodedToken = null;
+
+  if (accessToken) {
+    decodedToken = await jwtDecode(accessToken);
+  }
   return {
     id: decodedToken?.id,
     name: decodedToken?.name,
     email: decodedToken?.email,
     image: decodedToken?.image,
     role: decodedToken?.role,
+    bio: decodedToken?.bio,
+    followers: decodedToken?.followers,
+    following: decodedToken?.following,
     status: decodedToken?.status,
-  }
+  };
 };
 
 export const getNewAccessToken = async (): Promise<LoginResponse> => {
@@ -66,8 +77,7 @@ export const getNewAccessToken = async (): Promise<LoginResponse> => {
   return res.data; // Now this should be recognized as LoginResponse
 };
 
-
 export const logout = () => {
-    cookies().delete("accessToken");
-    cookies().delete("refreshToken");
-  };
+  cookies().delete("accessToken");
+  cookies().delete("refreshToken");
+};

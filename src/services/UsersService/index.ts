@@ -7,7 +7,26 @@ export const getAllUsers = async () => {
   const { data } = await nexiosInstance.get(`/user`, {
     cache: "no-store",
   });
-  console.log(data);
+  return data;
+};
+export const getSingleUser = async (id:string) => {
+  const { data } = await nexiosInstance.get(`/user/${id}`, {
+    cache: "no-store",
+  });
+  return data;
+};
+export const followUser = async (followData: any) => {
+  const { data } = await nexiosInstance.post(`/user/follow`, followData, {
+    cache: "no-store",
+  });
+  console.log(data, "followUser");
+  return data;
+};
+export const unFollowUser = async (followData:any) => {
+  const { data } = await nexiosInstance.post(`/user/unFollow`, followData, {
+    cache: "no-store",
+  });
+  console.log(data, 'unfollow');
   return data;
 };
 

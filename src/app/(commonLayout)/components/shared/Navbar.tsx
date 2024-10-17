@@ -1,5 +1,5 @@
 "use client";
-import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, NavbarMenu, NavbarMenuItem, NavbarMenuToggle, Button, Spinner} from "@nextui-org/react";
+import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, NavbarMenu, NavbarMenuItem, NavbarMenuToggle, Button} from "@nextui-org/react";
 import { useState } from "react";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { NavLogo } from "./NavLogo";

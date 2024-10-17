@@ -1,35 +1,82 @@
-/* ProfileCard.tsx */
-"use client";
+"use client"; // Keep this for a client component if you need interactivity
+
 import { useUser } from "@/context/user.provider";
+import { followUser, getSingleUser, unFollowUser } from "@/services/UsersService";
+import { TUser } from "@/types";
 import { Button, Avatar, Tabs, Tab } from "@nextui-org/react";
 import { MoreHorizontal } from "lucide-react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const ProfileCard = () => {
-  const { user } = useUser();
-  console.log(user)
+const DynamicProfile = () => {
+  const { user: logUser } = useUser();
+  const { userId } = useParams();
+
+  // Use state to store user data
+  const [user, setUser] = useState<TUser | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await getSingleUser(userId as string);
+      const userData = (response as { data: any }).data;
+      setUser(userData);
+    };
+
+    fetchUser();
+  }, [userId]);
+
+  const currentUser = user?._id === logUser?.id;
+  const isFollowing = user?.followers.includes(logUser?.id!);
+  console.log(user, { isFollowing });
+
+  const handleFollow = async () => {
+    const res = await followUser({userId: logUser?.id, followId: user?._id});
+    console.log(res, 'follow')
+   
+  };
+
+  const handleUnfollow = async () => {
+    const res = await unFollowUser({userId: logUser?.id, followId: user?._id});
+    console.log(res, 'unfollow')
+  };
+
+  if (!user) return <div>Loading...</div>; // Optional loading state
+
   return (
     <div className="p-6 max-w-lg mx-auto">
       {/* Header Section */}
       <div className="flex items-center mb-4">
         <Avatar
-          src={user?.image}
-          alt="Tony Ellis"
+          src={user.image}
+          alt={user.name}
           size="lg"
           className="rounded-full"
         />
         <div className="ml-4">
-          <h1 className="text-xl font-bold">{user?.name}</h1>
-          <p className="text-gray-500">{user?.email}</p>
+          <h1 className="text-xl font-bold">{user.name}</h1>
+          <p className="text-gray-500">{user.email}</p>
           <div className="flex space-x-2 mt-1 text-sm text-gray-500">
-            <span>{user?.following?.length ?? 0} Following</span>
+            <span>{user.following?.length ?? 0} Following</span>
             <span>·</span>
-            <span>{user?.followers?.length ?? 0} Followers</span>
+            <span>{user.followers?.length ?? 0} Followers</span>
           </div>
         </div>
-        <Button autoSave="" color="warning" className="ml-auto">
-          Follow
-        </Button>
+        {isFollowing ? (
+          <button
+            className="px-4 py-1 bg-red-500 text-white rounded ml-auto"
+            onClick={handleUnfollow}
+          >
+            Unfollow
+          </button>
+        ) : (
+          <button
+            className="px-4 py-1 bg-blue-500 text-white rounded ml-auto"
+            onClick={handleFollow}
+          >
+            Follow
+          </button>
+        )}
       </div>
 
       {/* Tabs Section */}
@@ -41,18 +88,19 @@ const ProfileCard = () => {
           <p className="text-gray-500">Created Content Here</p>
         </Tab>
       </Tabs>
+
       {/* Activity Post */}
       <div className="p-4 bg-white rounded-lg shadow-md space-y-2">
         {/* Post Header */}
         <div className="flex items-center">
           <Avatar
-            src={user?.image}
-            alt="Tony Ellis"
+            src={user.image}
+            alt={user.name}
             size="sm"
             className="rounded-full"
           />
           <div className="ml-3">
-            <p className="font-bold text-sm">{user?.name}</p>
+            <p className="font-bold text-sm">{user.name}</p>
             <p className="text-gray-500 text-xs">10h</p>
           </div>
           <button className="ml-auto">
@@ -98,4 +146,4 @@ const ProfileCard = () => {
   );
 };
 
-export default ProfileCard;
+export default DynamicProfile;

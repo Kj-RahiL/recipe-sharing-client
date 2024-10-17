@@ -1,4 +1,3 @@
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 "use client";
@@ -47,6 +46,9 @@ const FeedCard = () => {
   const handleFeedClick = (id: string) => {
     router.push(`/feed/${id}`); // Navigate to the feed details page
   };
+  const handleUserClick = (id: string) => {
+    router.push(`/user/${id}`); // Navigate to the feed details page
+  };
 
   return (
     <InfiniteScroll
@@ -66,9 +68,11 @@ const FeedCard = () => {
           className={`p-4 mb-10 rounded-lg shadow-md cursor-pointer ${
             theme === "dark" ? "bg-gray-900 text-white" : "bg-white"
           }`}
-          onClick={() => handleFeedClick(feed._id)} // Navigate on click
         >
-          <div className="flex items-center mb-4">
+          <div
+            className="flex items-center mb-4"
+            onClick={() => handleUserClick(feed?.author._id)}
+          >
             <Image
               src={feed?.author?.image}
               alt="User avatar"
@@ -81,21 +85,22 @@ const FeedCard = () => {
               <p className="text-gray-500 text-sm">{feed?.author?.email}</p>
             </div>
           </div>
-
-          <div className="relative mb-3">
-            <Image
-              src={feed?.image}
-              alt={feed?.title}
-              width={600}
-              height={300}
-              className="rounded-lg h-96"
-            />
-          </div>
-          <div>
-            <p className="font-bold text-lg">{feed?.title}</p>
-            <p className="text-gray-500 text-sm">{feed?.description}</p>
-            <p>{feed.cookingTime}</p>
-            <p>{feed.difficulty}</p>
+          <div onClick={() => handleFeedClick(feed._id)}>
+            <div className="relative mb-3">
+              <Image
+                src={feed?.image}
+                alt={feed?.title}
+                width={600}
+                height={300}
+                className="rounded-lg h-96"
+              />
+            </div>
+            <div>
+              <p className="font-bold text-lg">{feed?.title}</p>
+              <p className="text-gray-500 text-sm">{feed?.description}</p>
+              <p>{feed.cookingTime}</p>
+              <p>{feed.difficulty}</p>
+            </div>
           </div>
           <div className="flex justify-around mt-4 text-gray-600">
             <button className="flex items-center space-x-1">
