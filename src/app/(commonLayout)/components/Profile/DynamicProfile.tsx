@@ -1,47 +1,43 @@
-"use client"; // Keep this for a client component if you need interactivity
+"use client"; 
 
 import { useUser } from "@/context/user.provider";
-import { followUser, getSingleUser, unFollowUser } from "@/services/UsersService";
+import { useUserFollow, useUserUnFollow } from "@/hooks/user.hook";
+import { getSingleUser } from "@/services/UsersService";
 import { TUser } from "@/types";
 import { Button, Avatar, Tabs, Tab } from "@nextui-org/react";
-import { MoreHorizontal } from "lucide-react";
-import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import UserCreatedPost from "./UserCreatedPost";
 
 const DynamicProfile = () => {
   const { user: logUser } = useUser();
   const { userId } = useParams();
-
-  // Use state to store user data
   const [user, setUser] = useState<TUser | null>(null);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const response = await getSingleUser(userId as string);
-      const userData = (response as { data: any }).data;
-      setUser(userData);
-    };
+  const { mutate: handleUserFollow, isSuccess: followSuccess } = useUserFollow();
+  const { mutate: handleUserUnFollow, isSuccess: unFollowSuccess } = useUserUnFollow();
 
+  const fetchUser = async () => {
+    const response = await getSingleUser(userId as string);
+    setUser(response?.data || null);
+  };
+
+  useEffect(() => {
     fetchUser();
-  }, [userId]);
+  }, [userId, followSuccess, unFollowSuccess]);
 
   const currentUser = user?._id === logUser?.id;
-  const isFollowing = user?.followers.includes(logUser?.id!);
-  console.log(user, { isFollowing });
+  const isFollowing = user?.followers?.includes(logUser?.id || "");
 
-  const handleFollow = async () => {
-    const res = await followUser({userId: logUser?.id, followId: user?._id});
-    console.log(res, 'follow')
-   
+  const handleFollowToggle = () => {
+    if (isFollowing) {
+      handleUserUnFollow({ userId: logUser?.id, followId: user?._id });
+    } else {
+      handleUserFollow({ userId: logUser?.id, followId: user?._id });
+    }
   };
 
-  const handleUnfollow = async () => {
-    const res = await unFollowUser({userId: logUser?.id, followId: user?._id});
-    console.log(res, 'unfollow')
-  };
-
-  if (!user) return <div>Loading...</div>; // Optional loading state
+  if (!user) return <div>Loading...</div>;
 
   return (
     <div className="p-6 max-w-lg mx-auto">
@@ -62,86 +58,31 @@ const DynamicProfile = () => {
             <span>{user.followers?.length ?? 0} Followers</span>
           </div>
         </div>
-        {isFollowing ? (
-          <button
-            className="px-4 py-1 bg-red-500 text-white rounded ml-auto"
-            onClick={handleUnfollow}
+        {!currentUser && (
+          <Button
+            className={`ml-auto ${isFollowing ? "bg-red-500" : "bg-blue-500"}`}
+            onClick={handleFollowToggle}
           >
-            Unfollow
-          </button>
-        ) : (
-          <button
-            className="px-4 py-1 bg-blue-500 text-white rounded ml-auto"
-            onClick={handleFollow}
-          >
-            Follow
-          </button>
+            {isFollowing ? "Unfollow" : "Follow"}
+          </Button>
         )}
       </div>
 
       {/* Tabs Section */}
       <Tabs aria-label="Profile Options" className="mb-4">
+        <Tab key="created" title="Created">
+          <UserCreatedPost userId={userId as string} />
+        </Tab>
         <Tab key="activity" title="Activity">
           <p className="font-semibold text-orange-500">Activity Content Here</p>
-        </Tab>
-        <Tab key="created" title="Created">
-          <p className="text-gray-500">Created Content Here</p>
+          <p className="mt-10 text-gray-500">It's updating for the feature which post user</p>
+          <ul className="space-y-2">
+            <li>Commented</li>
+            <li>Rated</li>
+            <li>Started following</li>
+          </ul>
         </Tab>
       </Tabs>
-
-      {/* Activity Post */}
-      <div className="p-4 bg-white rounded-lg shadow-md space-y-2">
-        {/* Post Header */}
-        <div className="flex items-center">
-          <Avatar
-            src={user.image}
-            alt={user.name}
-            size="sm"
-            className="rounded-full"
-          />
-          <div className="ml-3">
-            <p className="font-bold text-sm">{user.name}</p>
-            <p className="text-gray-500 text-xs">10h</p>
-          </div>
-          <button className="ml-auto">
-            <MoreHorizontal className="text-gray-500" />
-          </button>
-        </div>
-
-        {/* Post Content */}
-        <p className="text-sm">
-          Great recipe. Easy to make. I used spicy guacamole instead of plain
-          avocado and Sriracha.
-        </p>
-
-        {/* Image Section */}
-        <div className="relative">
-          <Image
-            src="/recipe-image.jpg"
-            alt="Recipe Image"
-            width={600}
-            height={400}
-            className="rounded-lg"
-          />
-          <span className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center space-x-1">
-            <span>Made it</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-4 h-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-          </span>
-        </div>
-      </div>
     </div>
   );
 };

@@ -8,7 +8,7 @@ const authRoutes = ["/login", "/register"];
 export async function middleware(request: NextRequest) {
   //   console.log("middle", request);
   const { pathname } = request.nextUrl;
-  console.log("pa", pathname);
+  // console.log("pa", pathname);
 
   const accessToken = cookies().get("accessToken")?.value;
   if (!accessToken) {
@@ -33,10 +33,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  console.log(decodedToken, "decodedToken");
+  // console.log(decodedToken, "decodedToken");
 
   const role = decodedToken?.role;
-  console.log(role);
+  // console.log(role);
 
   if (role === "admin" && pathname.match(/^\/admin-dashboard/)) {
     return NextResponse.next();

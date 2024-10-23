@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { loginUser, registerUser } from "@/services/AuthService";
+import { createRecipe, getAllRecipe } from "@/services/RecipeService";
 import { useMutation } from "@tanstack/react-query";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 
 
-export const useUserRegistration = () => {
+export const useCreateRecipe = () => {
   return useMutation<any, Error, FieldValues>({
-    mutationKey: ["USER_REGISTRATION"],
-    mutationFn: async (userData) => await registerUser(userData),
+    mutationKey: ["CREATE_RECIPE"],
+    mutationFn: async (userData) => await createRecipe(userData),
     onSuccess: () => {
-      toast.success("User registration successful.");
+      toast.success("REcipe Created Successfully");
     },
     onError: (error) => {
       toast.error(error.message);
@@ -19,16 +19,16 @@ export const useUserRegistration = () => {
   });
 };
 
-export const useUserLogin = () => {
+export const useGetAllRecipe = () => {
   return useMutation<any, Error, FieldValues>({
-    mutationKey: ["USER_LOGIN"],
-    mutationFn: async (userData) => await loginUser(userData),
+    mutationKey: ["CREATE_RECIPE"],
+    mutationFn: async (userData) => await getAllRecipe(userData),
     onSuccess: () => {
-      toast.success("User login successful.");
+      toast.success("REcipe Created Successfully");
     },
     onError: (error) => {
-        console.log(error)
       toast.error(error.message);
     },
   });
 };
+

@@ -8,6 +8,7 @@ import SidebarMenu from "./SidebarMenu";
 import SidebarItem from "./SidebarItem";
 
  const AdminSidebarWrapper = () => {
+
   const pathname = usePathname();
   const { collapsed } = useSidebarContext();
 
@@ -65,11 +66,13 @@ import SidebarItem from "./SidebarItem";
                 <Settings />
               </div>
             </Tooltip>
-            <Tooltip content={"Profile"} color="primary">
+            <Tooltip content={"Profile"} color="primary" >
+              <Link href="/admin-dashboard/profile">
               <Avatar
                 src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
                 size="sm"
               />
+              </Link>
             </Tooltip>
           </div>
         </div>

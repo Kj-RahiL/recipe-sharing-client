@@ -2,31 +2,33 @@
 "use server";
 
 import nexiosInstance from "@/config/nexios.config";
+import { revalidateTag } from "next/cache";
 
 export const getAllUsers = async () => {
   const { data } = await nexiosInstance.get(`/user`, {
-    cache: "no-store",
+    next: { tags: ["Users"] },
   });
   return data;
 };
 export const getSingleUser = async (id:string) => {
   const { data } = await nexiosInstance.get(`/user/${id}`, {
-    cache: "no-store",
+    next: { tags: ["Users"] },
   });
   return data;
 };
 export const followUser = async (followData: any) => {
-  const { data } = await nexiosInstance.post(`/user/follow`, followData, {
-    cache: "no-store",
+  const { data } = await nexiosInstance.post(`/user/follow`, followData,  {
+    next: { tags: ["Users"] },
   });
   console.log(data, "followUser");
+  // toast.success(data?.message)
   return data;
 };
 export const unFollowUser = async (followData:any) => {
-  const { data } = await nexiosInstance.post(`/user/unFollow`, followData, {
-    cache: "no-store",
+  const { data } = await nexiosInstance.post(`/user/unFollow`, followData,  {
+    next: { tags: ["Users"] },
   });
-  console.log(data, 'unfollow');
+  // toast.success(data?.message)
   return data;
 };
 
@@ -34,10 +36,11 @@ export const unFollowUser = async (followData:any) => {
 // Delete a user
 export const deleteUser = async (id: string) => {
     try {
-      await nexiosInstance.delete(`/users/${id}`, {
-        cache: "no-store",
+       const { data } =await nexiosInstance.delete(`/user/${id}`, {
+        next: { tags: ["Users"] },
       });
-      console.log(`Deleted user: ${id}`);
+      console.log(`Deleted user: ${id}`, data);
+      return data
     } catch (error) {
       console.error(`Failed to delete user with ID: ${id}`, error);
       throw error;
@@ -47,9 +50,21 @@ export const deleteUser = async (id: string) => {
   // Update user status (e.g., from 'in-progress' to 'block')
   export const updateUserStatus = async (id: string, payload: any) => {
     try {
-      const { data } = await nexiosInstance.put(`/users/${id}`, payload, {
-        cache: "no-store",
+      const { data } = await nexiosInstance.put(`/user/${id}`, payload, {
+        next: { tags: ["Users"] },
       });
+      console.log(`Updated user status: ${id}`, data);
+      return data;
+    } catch (error) {
+      console.error(`Failed to update user status with ID: ${id}`, error);
+      throw error;
+    }
+  };
+
+  export const updateUser = async (id: string, payload: any) => {
+    try {
+      const { data } = await nexiosInstance.put(`/user/${id}`, payload);
+      revalidateTag("Users")
       console.log(`Updated user status: ${id}`, data);
       return data;
     } catch (error) {

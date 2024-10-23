@@ -15,6 +15,7 @@ export interface TUser {
     name: string;
     role: string;
     email: string;
+    phone: string;
     image: string;
     status: string;
     following:string[];
@@ -67,4 +68,11 @@ export interface TUser {
     success: boolean;
     message: string;
     data?: RecipeFormData;
+  }
+
+  export interface UserResponse {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: TUser;
   }

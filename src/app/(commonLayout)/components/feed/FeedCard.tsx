@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation"; // Import useRouter
 import { MessageCircle, Share2, ThumbsUp, ThumbsDown } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { getAllRecipe } from "@/services/RecipeService";
+import { Avatar } from "@nextui-org/react";
 
 const FeedCard = () => {
   const [feeds, setFeeds] = useState<any[]>([]);
@@ -73,11 +74,10 @@ const FeedCard = () => {
             className="flex items-center mb-4"
             onClick={() => handleUserClick(feed?.author._id)}
           >
-            <Image
+            <Avatar
               src={feed?.author?.image}
-              alt="User avatar"
-              width={40}
-              height={50}
+              alt={feed.author.name}
+              size="md"
               className="rounded-full"
             />
             <div className="ml-3">

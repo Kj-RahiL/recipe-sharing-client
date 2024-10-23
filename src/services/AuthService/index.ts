@@ -9,11 +9,12 @@ import { cookies } from "next/headers";
 export const registerUser = async (userData: any) => {
   const { data } = await nexiosInstance.post<RegisterResponse>(
     "/auth/register",
-    userData,
-    {
-      next: { tags: ["Register"] },
-    }
+    userData
   );
+  revalidateTag('Users')
+  if (!data.success) {
+    throw new Error(data.message || "Registration failed");
+  }
   return data;
 };
 
@@ -25,6 +26,10 @@ export const loginUser = async (userData: any) => {
       next: { tags: ["Login"] },
     }
   );
+  revalidateTag('Users')
+  if (!data?.success) {
+    throw new Error(data?.message || "LOgin failed");
+  }
   if (data?.success) {
     cookies().set("accessToken", data.token!);
     revalidateTag("Login");

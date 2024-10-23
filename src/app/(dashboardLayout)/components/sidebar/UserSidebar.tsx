@@ -60,10 +60,12 @@ const UserSidebar = () => {
               </div>
             </Tooltip>
             <Tooltip content={"Profile"} color="primary">
+            <Link href="/admin-dashboard/profile">
               <Avatar
                 src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
                 size="sm"
               />
+              </Link>
             </Tooltip>
           </div>
         </div>
