@@ -86,3 +86,24 @@ export const logout = () => {
   cookies().delete("accessToken");
   cookies().delete("refreshToken");
 };
+
+export const changePassword = async(newFormData: any) => {
+  const token = cookies().get("accessToken")?.value;
+  // console.log("tok", {token})
+  const {data} = await nexiosInstance.post("/auth/change-password", newFormData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json", // Optional: Specify content type
+    },
+  });
+  revalidateTag("Users");
+
+  // console.log(data)
+  // if (!data.success) {
+  //   throw new Error(data.message || "Change Password failed");
+  // }
+  return data;
+
+};
+
+

@@ -28,7 +28,7 @@ const EllipsisDropDown = () => {
             </Button>
           </DropdownItem>
           <DropdownItem key="Change Password">
-            <Button className="bg-gray-200/30 w-full" >
+            <Button className="bg-gray-200/30 w-full" onClick={changePasswordDisclosure.onOpen}>
               Change Password
             </Button>
           </DropdownItem>
