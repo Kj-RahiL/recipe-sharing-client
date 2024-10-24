@@ -21,7 +21,7 @@ import { updateUser } from "@/services/UsersService";
 const image_hosting_key = process.env.NEXT_PUBLIC_IMAGE_HOSTING_API;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
-const UpdatedProfile = () => {
+const UpdatedProfile = ({ onClose }: any) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null); 
@@ -88,7 +88,7 @@ console.log(imageFile)
 
   return (
     <div className="flex flex-col gap-4">
-      <Button onPress={onOpen} className="max-w-fit">
+      {/* <Button onPress={onOpen} className="w-full bg-gray-200/30">
         Update Profile
       </Button>
 
@@ -100,7 +100,7 @@ console.log(imageFile)
                 Update Your Profile
               </ModalHeader>
 
-              <ModalBody>
+              <ModalBody> */}
                 <form onSubmit={handleUpdateUser} className="space-y-4">
                   {/* Name Input */}
                   <div className="relative">
@@ -196,11 +196,11 @@ console.log(imageFile)
                     </Button>
                   </ModalFooter>
                 </form>
-              </ModalBody>
+              {/* </ModalBody>
             </>
           )}
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

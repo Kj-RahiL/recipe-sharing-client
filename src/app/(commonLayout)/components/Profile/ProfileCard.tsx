@@ -5,6 +5,8 @@ import { Avatar, Tabs, Tab } from "@nextui-org/react";
 import UserCreatedPost from "./UserCreatedPost";
 import UpdatedProfile from "./UpdatedProfile";
 import { useGetSingleUser } from "@/hooks/user.hook";
+import { EllipsisVertical } from "lucide-react";
+import EllipsisDropDown from "./EllipsisDropDown";
 
 
 const ProfileCard = () => {
@@ -17,7 +19,8 @@ const ProfileCard = () => {
   return (
     <div className="p-6 max-w-lg mx-auto">
       {/* Header Section */}
-      <div className="flex items-center mb-4">
+      <div className="flex items-center mb-4 justify-between">
+        <div className="flex gap-2 items-center">
         <Avatar
           src={profileData?.image}
           alt="Tony Ellis"
@@ -33,7 +36,8 @@ const ProfileCard = () => {
             <span>{profileData?.followers?.length ?? 0} Followers</span>
           </div>
         </div>
-        <UpdatedProfile />
+        </div>
+       <EllipsisDropDown/>
       </div>
 
       {/* Tabs Section */}

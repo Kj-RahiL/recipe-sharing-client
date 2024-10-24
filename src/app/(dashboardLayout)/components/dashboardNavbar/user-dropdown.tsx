@@ -49,7 +49,6 @@ const UserDropdown = () => {
         >
           Log Out
         </DropdownItem>
-
         <DropdownItem>
           <ThemeSwitcher></ThemeSwitcher>
         </DropdownItem>
