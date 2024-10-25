@@ -17,6 +17,7 @@ import { Camera, User, Mail, Phone } from "lucide-react";
 import Image from "next/image";
 import { useUser } from "@/context/user.provider";
 import { updateUser } from "@/services/UsersService";
+import { toast } from "sonner";
 
 const image_hosting_key = process.env.NEXT_PUBLIC_IMAGE_HOSTING_API;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
@@ -80,7 +81,14 @@ const UpdatedProfile = ({ onClose }: any) => {
       console.log(userData, "userr");
       const res = await updateUser(user?.id, userData);
       console.log("User updated successfully:", res);
-    } catch (error) {
+      if (res?.success) {
+        toast.success(res.message);
+        onClose(); 
+      } else {
+        toast.error(res?.message || "Password change failed.");
+      }
+    } catch (error:any) {
+      toast.error(error.message || "An error occurred.");
       console.error("User update failed:", error);
     }
   };

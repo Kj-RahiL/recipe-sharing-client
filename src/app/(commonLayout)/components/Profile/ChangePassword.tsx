@@ -1,7 +1,7 @@
-
 import { changePassword } from "@/services/AuthService";
 import { Button, Input, ModalFooter } from "@nextui-org/react";
 import { Lock, LockKeyhole } from "lucide-react";
+import { toast } from "sonner";
 
 const ChangePassword = ({ onClose }: any) => {
   const handleChangePassword = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -10,8 +10,18 @@ const ChangePassword = ({ onClose }: any) => {
     const oldPassword = formData.get("currentPassword") as string;
     const newPassword = formData.get("newPassword") as string;
     const newFormData = { oldPassword, newPassword };
-    const res = await changePassword(newFormData)
-    console.log(res, "res.data");
+    const res = await changePassword(newFormData);
+    try {
+      const res = await changePassword(newFormData);
+      if (res?.success) {
+        toast.success(res.message);
+        onClose(); 
+      } else {
+        toast.error(res?.message || "Password change failed.");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred.");
+    }
   };
 
   return (

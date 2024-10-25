@@ -14,6 +14,7 @@ import {
   TableCell,
   Button,
   Switch,
+  Badge,
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -48,7 +49,8 @@ const RecipeManage = () => {
   // Toggle the published status
   const handleTogglePublished = async (id: string, currentStatus: boolean) => {
     try {
-      await updateRecipe(id, { isPublished: !currentStatus }); // Assume updateRecipe handles the PATCH request
+      const res = await updateRecipe(id, { isPublished: !currentStatus }); // Assume updateRecipe handles the PATCH request
+     console.log(res)
       setRecipes((prev) =>
         prev.map((recipe) =>
           recipe._id === id
@@ -86,12 +88,23 @@ const RecipeManage = () => {
             <TableCell>{`${item.author.name} (${item.author.email})`}</TableCell>
             <TableCell>{item.isPremium ? "Yes" : "No"}</TableCell>
             <TableCell>
-              <Switch
-                checked={item.isPublished}
-                onChange={() =>
-                  handleTogglePublished(item._id, item.isPublished)
-                }
-              />
+            <div className="flex items-center justify-between w-[150px]">
+                <Badge
+                  color={item.isPublished ? "success" : "default"}
+                  variant="flat"
+                  size="md"
+                  className="capitalize"
+                >
+                  {item.isPublished ? "Published" : "Unpublished"}
+                </Badge>
+                <Switch
+                  checked={item.isPublished}
+                  onChange={() =>
+                    handleTogglePublished(item._id, item.isPublished)
+                  }
+                  color={item.isPublished ? "success" : "default"}
+                />
+              </div>
             </TableCell>
 
             <TableCell>

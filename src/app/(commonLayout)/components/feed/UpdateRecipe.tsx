@@ -2,13 +2,20 @@
 "use client";
 
 import { useUser } from "@/context/user.provider";
-import { createRecipe } from "@/services/RecipeService";
-import { RecipeFormData } from "@/types";
+import { createRecipe, updateRecipe } from "@/services/RecipeService";
+import { RecipeFormData, TRecipe } from "@/types";
 import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
-const RecipeForm: React.FC = () => {
-  const { user,  } = useUser();
+interface RecipeFormProps {
+  existingRecipe?: TRecipe | null; 
+  onClose: () => void; 
+}
+
+const RecipeForm: React.FC<RecipeFormProps> = ( {existingRecipe, onClose} ) => {
+
+  const { user } = useUser();
   const {
     control,
     register,
@@ -16,9 +23,9 @@ const RecipeForm: React.FC = () => {
     reset,
     formState: { errors },
   } = useForm<RecipeFormData>({
-    defaultValues: {
+    defaultValues: existingRecipe || {
       ingredients: [{ name: "", quantity: "", type: "" }],
-      steps: [{ description: "", duration: '' }],
+      steps: [{ description: "", duration: "" }],
       category: "",
       tags: "",
       isPublished: true,
@@ -26,37 +33,71 @@ const RecipeForm: React.FC = () => {
     },
   });
 
-  const { fields: ingredientFields, append: addIngredient, remove: removeIngredient } =
-    useFieldArray({ control, name: "ingredients" });
+  // Initialize form with existing recipe values when in edit mode
+  useEffect(() => {
+    if (existingRecipe) {
+      reset(existingRecipe); // Populate form with existing recipe data
+    }
+  }, [existingRecipe, reset]);
 
-  const { fields: stepFields, append: addStep, remove: removeStep } =
-    useFieldArray({ control, name: "steps" });
-    
+  const {
+    fields: ingredientFields,
+    append: addIngredient,
+    remove: removeIngredient,
+  } = useFieldArray({ control, name: "ingredients" });
 
-  const onSubmit: SubmitHandler<RecipeFormData> = async(data) => {
-    const processedData = {
-        ...data,
-        category: data.category.split(',').map((cat: any) => cat.trim()) as string[], 
-        tags: data.tags.split(',').map((tag: any) => tag.trim()),
-        author: user?.id, 
-      };
-    console.log("Submitted Data:", data);
-    const response = await createRecipe(processedData)
-    console.log(response, 'subit')
-    toast.success(response?.message)
-    reset(); 
+  const {
+    fields: stepFields,
+    append: addStep,
+    remove: removeStep,
+  } = useFieldArray({ control, name: "steps" });
+
+  const onSubmit: SubmitHandler<RecipeFormData> = async (data) => {
+    const  { author, _id, ...updateData } = {
+      ...data,
+      category: Array.isArray(data.category)
+        ? data.category
+        : data.category.split(",").map((cat) => cat.trim()),
+
+      tags: Array.isArray(data.tags)
+        ? data.tags
+        : data.tags.split(",").map((tag) => tag.trim()),
+        // author: user?.id
+    };
+const create = { ...updateData, author: user?.id };
+
+  
+    console.log( existingRecipe?._id , 'esss');
+
+    try {
+      let response;
+      if (existingRecipe) {
+        // Update recipe if editing
+        response = await updateRecipe(existingRecipe?._id, updateData);
+        console.log(response)
+        toast.success("Recipe updated successfully!");
+        onClose()
+      } else {
+        // Create new recipe if no existing recipe data
+        response = await createRecipe(create);
+        toast.success("Recipe created successfully!");
+      }
+      console.log(response);
+      reset();
+      onClose(); 
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+      console.error(error);
+    }
   };
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="max-w-4xl mx-auto p-8 bg-white dark:bg-gray-800 shadow-md rounded-lg space-y-8"
+      className="w-full mx-auto p-8 bg-white dark:bg-gray-800 shadow-md rounded-lg space-y-8"
     >
-      <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white">
-        Create a New Recipe
-      </h1>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Title Field */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Title
@@ -69,18 +110,22 @@ const RecipeForm: React.FC = () => {
           <p className="text-red-500 text-sm">{errors.title?.message}</p>
         </div>
 
+        {/* Description Field */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Description
           </label>
           <textarea
-            {...register("description", { required: "Description is required" })}
+            {...register("description", {
+              required: "Description is required",
+            })}
             className="input-field"
             placeholder="Describe your recipe"
           />
           <p className="text-red-500 text-sm">{errors.description?.message}</p>
         </div>
 
+        {/* Image URL Field */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Image URL
@@ -92,6 +137,7 @@ const RecipeForm: React.FC = () => {
           />
         </div>
 
+        {/* Other Fields */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Cooking Time (minutes)
@@ -128,8 +174,11 @@ const RecipeForm: React.FC = () => {
         </div>
       </div>
 
+      {/* Ingredient Fields */}
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Ingredients</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+          Ingredients
+        </h2>
         {ingredientFields.map((field, index) => (
           <div key={field.id} className="flex items-center space-x-4">
             <input
@@ -165,10 +214,13 @@ const RecipeForm: React.FC = () => {
         </button>
       </div>
 
+      {/* Steps Section */}
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Steps</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+          Steps
+        </h2>
         {stepFields.map((field, index) => (
-          <div key={field.id} className="flex items-center space-x-4 ">
+          <div key={field.id} className="flex items-center space-x-4">
             <input
               {...register(`steps.${index}.description`)}
               placeholder="Description"
@@ -191,13 +243,12 @@ const RecipeForm: React.FC = () => {
         ))}
         <button
           type="button"
-          onClick={() => addStep({ description: "", duration: '' })}
+          onClick={() => addStep({ description: "", duration: "" })}
           className="btn"
         >
           Add Step
         </button>
       </div>
-
       <div>
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           Categories (comma-separated)
@@ -219,20 +270,20 @@ const RecipeForm: React.FC = () => {
           className="input-field"
         />
       </div>
-
       <div className="flex space-x-6">
-        <label className="flex items-center space-x-2">
-          <input type="checkbox" {...register("isPublished")} />
-          <span>Is Published</span>
-        </label>
+        {!existingRecipe && (
+          <label className="flex items-center space-x-2">
+            <input type="checkbox" {...register("isPublished")} />
+            <span>Is Published</span>
+          </label>
+        )}
         <label className="flex items-center space-x-2">
           <input type="checkbox" {...register("isPremium")} />
           <span>Is Premium</span>
         </label>
       </div>
-
       <button type="submit" className="btn btn-primary w-full">
-        Create Recipe
+        {existingRecipe ? "Update Recipe" : "Create Recipe"}
       </button>
     </form>
   );

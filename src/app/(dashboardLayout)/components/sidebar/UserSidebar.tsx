@@ -46,6 +46,12 @@ const UserSidebar = () => {
                 icon={< SquarePen/>}
                 href="/dashboard/create-recipe"
               />
+              <SidebarItem
+                isActive={pathname === "/dashboard/my-recipe"}
+                title="My Recipe"
+                icon={< SquarePen/>}
+                href="/dashboard/my-recipe"
+              />
             </SidebarMenu>
           </div>
           <div className={Sidebar.Footer()}>

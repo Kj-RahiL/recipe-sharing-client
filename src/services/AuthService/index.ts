@@ -81,12 +81,6 @@ export const getNewAccessToken = async (): Promise<LoginResponse> => {
 
   return res.data; // Now this should be recognized as LoginResponse
 };
-
-export const logout = () => {
-  cookies().delete("accessToken");
-  cookies().delete("refreshToken");
-};
-
 export const changePassword = async(newFormData: any) => {
   const token = cookies().get("accessToken")?.value;
   // console.log("tok", {token})
@@ -105,5 +99,12 @@ export const changePassword = async(newFormData: any) => {
   return data;
 
 };
+
+export const logout = () => {
+  cookies().delete("accessToken");
+  cookies().delete("refreshToken");
+};
+
+
 
 

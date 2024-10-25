@@ -3,11 +3,11 @@
 
 import nexiosInstance from "@/config/nexios.config";
 import { RecipeResponse } from "@/types";
+import { revalidateTag } from "next/cache";
 
 export const createRecipe = async (recipeData:any) => {
-  const { data } = await nexiosInstance.post<RecipeResponse>(`/recipe`,  recipeData, {
-    cache: "no-store",
-  });
+  const { data } = await nexiosInstance.post<RecipeResponse>(`/recipe`,  recipeData,);
+  revalidateTag('RECIPE')
   console.log(data);
   return data;
 };
@@ -22,7 +22,9 @@ export const createRecipe = async (recipeData:any) => {
 // };
 export const getAllRecipe = async (page?:number) => {
   const { data } = await nexiosInstance.get(`/recipe?page=${page}`, {
-    cache: "no-store",
+    next: {
+      tags: ['RECIPE']
+    }
   });
   // console.log(data);
   return data;
@@ -37,6 +39,7 @@ export const getRecipeById = async (id: string) => {
 };
 
 export const updateRecipe = async (id: string, updateData: any) => {
+  console.log({id, updateData})
   try {
     const { data } = await nexiosInstance.put(`/recipe/${id}`, updateData, {
       cache: "no-store",
@@ -52,12 +55,15 @@ export const updateRecipe = async (id: string, updateData: any) => {
 // Delete a specific recipe
 export const deleteRecipe = async (id: string) => {
   try {
-    await nexiosInstance.delete(`/recipe/${id}`, {
-      cache: "no-store",
+    const {data} = await nexiosInstance.delete(`/recipe/${id}`, {
+      next: {
+        tags: ['RECIPE']
+      }
     });
-    console.log(`Deleted recipe: ${id}`);
+    return data
   } catch (error) {
     console.error(`Failed to delete recipe with ID: ${id}`, error);
     throw error;
   }
+  
 };

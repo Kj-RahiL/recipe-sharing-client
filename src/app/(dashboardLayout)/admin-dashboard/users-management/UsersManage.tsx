@@ -24,7 +24,7 @@ const UserManage = () => {
         toast.success("User deleted successfully!");
         refetch();
       }
-    } catch (error) {
+    } catch (error:any) {
       toast.error(`Failed to delete user: ${error?.message}`);
     }
   };
@@ -33,12 +33,12 @@ const UserManage = () => {
   const handleStatusChange = async (id: string) => {
     const updateStatus = { status: "blocked" };
     try {
-      await updateUserStatus(id, updateStatus);
+     const res = await updateUserStatus(id, updateStatus);
       if (isSuccess) {
         toast.success("User status updated to 'blocked'.");
         refetch();
       }
-    } catch (error) {
+    } catch (error:any) {
       toast.error(`Failed to update status: ${error.message}`);
     }
   };
@@ -51,7 +51,7 @@ const UserManage = () => {
         toast.success("User status updated to 'in-progress'.");
         refetch();
       }
-    } catch (error) {
+    } catch (error:any) {
       toast.error(`Failed to update status: ${error.message}`);
     }
   };

@@ -16,7 +16,6 @@ export default function RootLayout({
     <div className="mx-auto container">
       <NavigationPage />
       <div className="min-h-screen">{children}</div>
-
       <Footer />
     </div>
   );

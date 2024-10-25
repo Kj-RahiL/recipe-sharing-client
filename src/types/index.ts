@@ -49,6 +49,27 @@ export interface TUser {
     duration: string;
   }
   
+  export interface TRecipe {
+    _id: string;
+    title: string;
+    description: string;
+    author:TUser;
+    image: string;
+    cookingTime: string;
+    servings: string;
+    difficulty: string;
+    ingredients: Ingredient[];
+    steps: Step[];
+    category: string;
+    comment: any[]; 
+    upVotes: any[];
+    downVotes: any[];
+    rating: number[];
+    tags: string;
+    isPublished: boolean;
+    isPremium: boolean;
+  }
+  
   export interface RecipeFormData {
     title: string;
     description: string;
@@ -63,6 +84,7 @@ export interface TUser {
     isPublished: boolean;
     isPremium: boolean;
   }
+  
 
   export interface RecipeResponse {
     success: boolean;
