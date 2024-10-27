@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { createRecipe, getAllRecipe } from "@/services/RecipeService";
-import { useMutation } from "@tanstack/react-query";
+import { createRecipe, downvoteRecipe, getAllRecipe, upvoteRecipe } from "@/services/RecipeService";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -20,15 +20,38 @@ export const useCreateRecipe = () => {
 };
 
 export const useGetAllRecipe = () => {
-  return useMutation<any, Error, FieldValues>({
-    mutationKey: ["CREATE_RECIPE"],
-    mutationFn: async (userData) => await getAllRecipe(userData),
-    onSuccess: () => {
-      toast.success("REcipe Created Successfully");
+  return useQuery({
+    queryKey: ["RECIPE"],
+    queryFn: async () => await getAllRecipe()
+  });
+};
+
+// Custom hook for upvoting and downvoting
+export const useVoteRecipe = () => {
+  const queryClient = useQueryClient();
+
+  const upvoteMutation = useMutation({
+    mutationFn: (recipeId: string) => upvoteRecipe(recipeId),
+    onSuccess: (res: any) => {
+      queryClient.invalidateQueries({queryKey: ["RECIPE"]});
+      toast.success(res?.message);
     },
     onError: (error) => {
       toast.error(error.message);
     },
   });
+
+  const downvoteMutation = useMutation({
+    mutationFn: (recipeId: string) => downvoteRecipe(recipeId),
+    onSuccess: (res:any) => {
+      queryClient.invalidateQueries({queryKey: ["RECIPE"]});
+      toast.success(res?.message);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  return { upvoteMutation, downvoteMutation };
 };
 

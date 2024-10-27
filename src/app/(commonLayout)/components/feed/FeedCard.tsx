@@ -1,115 +1,67 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useRouter } from "next/navigation";
 import { MessageCircle, Share2, ThumbsUp, ThumbsDown } from "lucide-react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { getAllRecipe } from "@/services/RecipeService";
-import { Avatar } from "@nextui-org/react";
+import { Avatar } from "@nextui-org/react"; 
+import { useGetAllRecipe, useVoteRecipe } from "@/hooks/recipe.hook";
+
 
 const FeedCard = () => {
-  const [feeds, setFeeds] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const { theme } = useTheme();
-  const router = useRouter(); // Router for navigation
+  const router = useRouter();
 
-  const fetchFeeds = async () => {
-    if (loading || !hasMore) return;
+  // Fetch all recipes using the hook
+  const { data: recipes, isLoading, isError } = useGetAllRecipe();
+  const { upvoteMutation, downvoteMutation } = useVoteRecipe();
 
-    setLoading(true);
-    try {
-      const response = await getAllRecipe(page);
-      const newFeeds = (response as { data: any[] }).data;
+  console.log(recipes)
 
-      if (newFeeds.length > 0) {
-        setFeeds((prevFeeds) => [...prevFeeds, ...newFeeds]);
-        if (newFeeds.length < 5) setHasMore(false);
-      } else {
-        setHasMore(false);
-      }
-    } catch (error) {
-      console.error("Error fetching feeds:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleFeedClick = (id: string) => router.push(`/feed/${id}`);
+  const handleUserClick = (id: string) => router.push(`/user/${id}`);
 
-  useEffect(() => {
-    fetchFeeds();
-  }, [page]);
-
-  const handleFeedClick = (id: string) => {
-    router.push(`/feed/${id}`); // Navigate to the feed details page
-  };
-  const handleUserClick = (id: string) => {
-    router.push(`/user/${id}`); // Navigate to the feed details page
-  };
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Failed to load recipes.</p>;
 
   return (
-    <InfiniteScroll
-      dataLength={feeds.length}
-      next={() => setPage((prev) => prev + 1)}
-      hasMore={hasMore}
-      loader={<p className="text-center">Loading more feeds...</p>}
-      endMessage={
-        <p className="text-center">
-          <b>You have seen it all!</b>
-        </p>
-      }
-    >
-      {feeds.map((feed) => (
+    <div className="grid grid-cols-1">
+      {recipes?.data?.map((feed: any) => (
         <div
-          key={feed._id}
-          className={`p-4 mb-10 rounded-lg shadow-md cursor-pointer ${
-            theme === "dark" ? "bg-gray-900 text-white" : "bg-white"
-          }`}
+          key={feed?._id}
+          className="p-4 mb-10 rounded-lg shadow-md cursor-pointer dark:bg-gray-900 dark:text-white light:bg-white"
         >
-          <div
-            className="flex items-center mb-4"
-            onClick={() => handleUserClick(feed?.author._id)}
-          >
-            <Avatar
-              src={feed?.author?.image}
-              alt={feed.author.name}
-              size="md"
-              className="rounded-full"
-            />
+          <div className="flex items-center mb-4" onClick={() => handleUserClick(feed.author._id)}>
+            <Avatar src={feed.author.image} alt={feed.author.name} size="md" className="rounded-full" />
             <div className="ml-3">
-              <p className="font-bold text-lg">{feed?.author?.name}</p>
-              <p className="text-gray-500 text-sm">{feed?.author?.email}</p>
+              <p className="font-bold text-lg">{feed.author.name}</p>
+              <p className="text-gray-500 text-sm">{feed.author.email}</p>
             </div>
           </div>
+
           <div onClick={() => handleFeedClick(feed._id)}>
-            <div className="relative mb-3">
-              <Image
-                src={feed?.image}
-                alt={feed?.title}
-                width={600}
-                height={300}
-                className="rounded-lg h-96"
-              />
-            </div>
+            <Image
+              src={feed.image}
+              alt={feed.title}
+              width={600}
+              height={300}
+              className="rounded-lg h-96 mb-3"
+            />
             <div>
-              <p className="font-bold text-lg">{feed?.title}</p>
-              <p className="text-gray-500 text-sm">{feed?.description}</p>
+              <p className="font-bold text-lg">{feed.title}</p>
+              <p className="text-gray-500 text-sm">{feed.description}</p>
               <p>{feed.cookingTime}</p>
               <p>{feed.difficulty}</p>
             </div>
           </div>
+
           <div className="flex justify-around mt-4 text-gray-600">
-            <button className="flex items-center space-x-1">
+            <button onClick={() => upvoteMutation.mutate(feed._id)} className="flex items-center space-x-1">
               <ThumbsUp className="w-5 h-5" />
-              <span>Like</span>
+              <span>{feed.upVotes.length} Likes</span>
             </button>
-            <button className="flex items-center space-x-1">
+            <button onClick={() => downvoteMutation.mutate(feed._id)} className="flex items-center space-x-1">
               <ThumbsDown className="w-5 h-5" />
-              <span>Dislike</span>
+              <span>{feed.downVotes.length} Dislikes</span>
             </button>
             <button className="flex items-center space-x-1">
               <MessageCircle className="w-5 h-5" />
@@ -122,7 +74,7 @@ const FeedCard = () => {
           </div>
         </div>
       ))}
-    </InfiniteScroll>
+    </div>
   );
 };
 

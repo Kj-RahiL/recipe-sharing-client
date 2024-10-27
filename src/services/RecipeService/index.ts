@@ -3,12 +3,14 @@
 
 import nexiosInstance from "@/config/nexios.config";
 import { RecipeResponse } from "@/types";
+import { log } from "console";
 import { revalidateTag } from "next/cache";
+import { cookies } from "next/headers";
 
 export const createRecipe = async (recipeData:any) => {
   const { data } = await nexiosInstance.post<RecipeResponse>(`/recipe`,  recipeData,);
   revalidateTag('RECIPE')
-  console.log(data);
+  // console.log(data);
   return data;
 };
 
@@ -20,13 +22,13 @@ export const createRecipe = async (recipeData:any) => {
 //   console.log(data);
 //   return data;
 // };
-export const getAllRecipe = async (page?:number) => {
-  const { data } = await nexiosInstance.get(`/recipe?page=${page}`, {
+export const getAllRecipe = async () => {
+  const { data } = await nexiosInstance.get(`/recipe`, {
     next: {
       tags: ['RECIPE']
     }
   });
-  // console.log(data);
+  // console.log(data, 'ree');
   return data;
 };
 
@@ -34,12 +36,12 @@ export const getRecipeById = async (id: string) => {
   const { data } = await nexiosInstance.get<any>(`/recipe/${id}`, {
     cache: "no-store",
   });
-  console.log(JSON.stringify(data, null, 2), 'getRecipeById'); 
+  // console.log(JSON.stringify(data, null, 2), 'getRecipeById'); 
   return data;
 };
 
 export const updateRecipe = async (id: string, updateData: any) => {
-  console.log({id, updateData})
+  // console.log({id, updateData})
   try {
     const { data } = await nexiosInstance.put(`/recipe/${id}`, updateData, {
       cache: "no-store",
@@ -66,4 +68,72 @@ export const deleteRecipe = async (id: string) => {
     throw error;
   }
   
+};
+
+
+export const upvoteRecipe = async (recipeId: string) => {
+  const token = cookies().get("accessToken")?.value;
+  try {
+    const {data} = await nexiosInstance.post(`/recipe/upvote`, { recipeId }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", 
+      }
+    });
+    revalidateTag("RECIPE")
+    return data
+  } catch (error) {
+    console.error(`Failed to upvote recipe with ID: ${recipeId}`, error);
+    throw error;
+  }
+};
+
+export const downvoteRecipe = async (recipeId: string) => {
+  console.log(recipeId)
+  const token = cookies().get("accessToken")?.value;
+  try {
+    const {data} = await nexiosInstance.post(`/recipe/downVote`, { recipeId }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", 
+      }
+    });
+    revalidateTag("RECIPE")
+    return data
+  } catch (error) {
+    console.error(`Failed to downvote recipe with ID: ${recipeId}`, error);
+    throw error;
+  }
+};
+
+export const commentOnRecipe = async (recipeId: string, comment: string) => {
+  const token = cookies().get("accessToken")?.value;
+  try {
+    const {data} = await nexiosInstance.post(`/recipe/comment/${recipeId}`, {  comment }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", 
+      }
+    });
+    revalidateTag("RECIPE")
+    return data
+  } catch (error) {
+    console.error(`Failed to comment recipe with ID: ${recipeId}`, error);
+    throw error;
+  }
+};
+export const rateRecipe = async (recipeId:string, rateData: {}) => {
+  const token = cookies().get("accessToken")?.value;
+  try {
+    const {data} = await nexiosInstance.post(`/recipe/comment/${recipeId}`, rateData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", 
+      }});
+      revalidateTag("RECIPE")
+    return data
+  } catch (error) {
+    console.error(`Failed to comment recipe with ID: ${recipeId}`, error);
+    throw error;
+  }
 };
