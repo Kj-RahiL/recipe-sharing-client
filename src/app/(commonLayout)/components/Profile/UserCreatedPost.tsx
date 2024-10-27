@@ -25,7 +25,7 @@ const UserCreatedPost = ({ userId }: UserCreatedPostProps) => {
 
   const fetchRecipes = async () => {
     try {
-      const res = await getAllRecipe(1);
+      const res = await getAllRecipe();
       const newFeeds = (res as { data: Recipe[] }).data;
       setRecipes(newFeeds);
     } catch (error) {

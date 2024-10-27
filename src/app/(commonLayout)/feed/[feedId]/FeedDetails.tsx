@@ -5,56 +5,32 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { getRecipeById } from "@/services/RecipeService";// Icons
-import { Textarea, Button } from "@nextui-org/react"; // For comment input
-import { Share, ThumbsDown, ThumbsUp } from "lucide-react";
+import { getRecipeById } from "@/services/RecipeService"; // Icons
+import { Textarea, Button, Avatar } from "@nextui-org/react"; // For comment input
+import { Ellipsis, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useUser } from "@/context/user.provider";
+import { useGetRecipeById, useRecipe } from "@/hooks/recipe.hook";
+import { toast } from "sonner";
+import { formatDistanceToNow } from "date-fns";
 
 const FeedDetails = () => {
-    const {user} = useUser()
-  const { feedId } = useParams(); // Get recipe ID from route parameters
-  const [recipe, setRecipe] = useState<any>(null);
+  const { user } = useUser();
+  const { feedId } = useParams();
+  const { data, isLoading, error } = useGetRecipeById(feedId as string);
+  const { upvoteMutation, downvoteMutation, commentMutation, rateMutation,  } = useRecipe();
   const [comment, setComment] = useState<string>(""); // Comment input state
-  const [comments, setComments] = useState<any[]>([]); // State to track all comments
-  const [upVotes, setUpVotes] = useState<number>(0);
-  const [downVotes, setDownVotes] = useState<number>(0);
-
-  // Fetch recipe details
-  const fetchFeeds = async () => {
-    try {
-      const response = await getRecipeById(feedId as string);
-      const recipeData = response?.data;
-      setRecipe(recipeData);
-      setComments(recipeData?.comment || []); // Set initial comments
-      setUpVotes(recipeData.upVotes.length); // Initialize upvotes
-      setDownVotes(recipeData.downVotes.length); // Initialize downvotes
-    } catch (error) {
-      console.error("Error fetching feeds:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (feedId) fetchFeeds();
-  }, [feedId]);
+  const recipe = data?.data;
+  const recipeId = feedId as string;
 
   // Handle comment submission
-  const handleAddComment = () => {
-    if (comment.trim()) {
-      const newComment = {
-        _id: new Date().toISOString(), // Temporary ID
-        text: comment,
-        author: user?.name || 'user', 
-        authorEmail: user?.email, 
-        createdAt: new Date().toISOString(),
-      };
-      setComments([...comments, newComment]);
-      setComment(""); // Clear input
+  const handleCommentSubmit = () => {
+    if (!comment.trim()) {
+      toast.error("Comment cannot be empty!");
+      return;
     }
+    commentMutation.mutate({ recipeId, comment });
+    setComment("");
   };
-
-  // Handle upvote/downvote
-  const handleUpVote = () => setUpVotes(upVotes + 1);
-  const handleDownVote = () => setDownVotes(downVotes + 1);
 
   // Handle share functionality
   const handleShare = () => {
@@ -71,7 +47,7 @@ const FeedDetails = () => {
     }
   };
 
-  if (!recipe) return <p>Loading...</p>;
+  if (isLoading) return <p>Loading...</p>;
 
   return (
     <div className="p-8 max-w-3xl mx-auto bg-white rounded-lg shadow-lg">
@@ -99,15 +75,21 @@ const FeedDetails = () => {
         className="rounded-lg mb-6 h-96"
       />
       <p className="text-lg mb-4">{recipe.description}</p>
-      <p><strong>Cooking Time:</strong> {recipe.cookingTime}</p>
-      <p><strong>Servings:</strong> {recipe.servings}</p>
-      <p><strong>Difficulty:</strong> {recipe.difficulty}</p>
+      <p>
+        <strong>Cooking Time:</strong> {recipe.cookingTime}
+      </p>
+      <p>
+        <strong>Servings:</strong> {recipe.servings}
+      </p>
+      <p>
+        <strong>Difficulty:</strong> {recipe.difficulty}
+      </p>
 
       {/* Ingredients */}
       <div className="mt-6">
         <h2 className="text-2xl font-semibold mb-4">Ingredients</h2>
         <ul className="list-disc pl-5">
-          {recipe.ingredients.map((ingredient: any) => (
+          {recipe.ingredients?.map((ingredient: any) => (
             <li key={ingredient._id}>
               {ingredient.quantity} of {ingredient.name}
             </li>
@@ -119,7 +101,7 @@ const FeedDetails = () => {
       <div className="mt-6">
         <h2 className="text-2xl font-semibold mb-4">Steps</h2>
         <ol className="list-decimal pl-5">
-          {recipe.steps.map((step: any, index: number) => (
+          {recipe.steps?.map((step: any, index: number) => (
             <li key={index} className="mb-2">
               {step.description} (Duration: {step.duration} mins)
             </li>
@@ -128,39 +110,71 @@ const FeedDetails = () => {
       </div>
 
       {/* Upvote, Downvote, and Share */}
-      <div className="flex items-center space-x-6 mt-6">
+      <div className="flex justify-around mt-4 text-gray-600">
         <button
-          className="flex items-center space-x-1 text-green-500"
-          onClick={handleUpVote}
+          onClick={() => upvoteMutation.mutate(recipe._id)}
+          className={`flex items-center space-x-1 ${
+            recipe.upVotes?.includes(user?.id) ? "text-blue-600" : ""
+          }`}
         >
-          <ThumbsUp /> <span>{upVotes}</span>
+          <ThumbsUp className="w-5 h-5" />
+          <span>{recipe.upVotes?.length} Likes</span>
         </button>
         <button
-          className="flex items-center space-x-1 text-red-500"
-          onClick={handleDownVote}
+          onClick={() => downvoteMutation.mutate(recipe._id)}
+          className={`flex items-center space-x-1 ${
+            recipe.downVotes?.includes(user?.id) ? "text-amber-600" : ""
+          }`}
         >
-          <ThumbsDown /> <span>{downVotes}</span>
+          <ThumbsDown className="w-5 h-5" />
+          <span>{recipe.downVotes?.length} Dislikes</span>
         </button>
-        <button
-          className="flex items-center space-x-1 text-blue-500"
-          onClick={handleShare}
-        >
-          <Share /> <span>Share</span>
+        <button onClick={handleShare} className="flex items-center space-x-1">
+          <Share2 className="w-5 h-5" />
+          <span>Share</span>
         </button>
       </div>
 
       {/* Comments Section */}
       <div className="mt-8">
         <h2 className="text-2xl font-semibold mb-4">Comments</h2>
-        <ul className="space-y-4">
-          {comments.map((cmt) => (
-            <li key={cmt._id} className="border-b pb-2">
-              <p className="font-semibold">{cmt.author}</p>
-              <p className="text-gray-700">{cmt.authorEmail}</p>
-              <p>{cmt.text}</p>
-              <p className="text-gray-500 text-base">
-                {new Date(cmt.createdAt).toLocaleString()}
-              </p>
+
+        <ul className="space-y-6">
+          {recipe?.comment?.map((cmt: any) => (
+            <li key={cmt._id} className="border-b border-gray-300 pb-4">
+              <div className="flex items-start gap-3">
+                <Avatar
+                  src={cmt?.user?.image}
+                  alt={cmt?.user?.name}
+                  size="md"
+                  className="rounded-full w-12 h-12 object-cover"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 justify-between">
+                    <div>
+                      <p className="font-semibold text-base">
+                        {cmt?.user?.name}
+                      </p>
+                      <p className="text-gray-500 text-xs">
+                        {cmt?.user?.email}
+                      </p>
+                    </div>
+                    <div className="flex items-center">
+                      <p className="text-gray-500 text-xs mr-4">
+                        {formatDistanceToNow(new Date(cmt.date), {
+                          addSuffix: true,
+                        })}
+                      </p>
+                      <Ellipsis />
+                    </div>
+                  </div>
+                  <p className="text-gray-800 text-base mt-2">{cmt.comment}</p>
+                  <div className="flex space-x-6 mt-2 text-sm text-gray-500">
+                    <button className="hover:underline">Like</button>
+                    <button className="hover:underline">Reply</button>
+                  </div>
+                </div>
+              </div>
             </li>
           ))}
         </ul>
@@ -173,7 +187,11 @@ const FeedDetails = () => {
             placeholder="Add a comment..."
             fullWidth
           />
-          <Button onClick={handleAddComment} className="mt-2" color="primary">
+          <Button
+            onClick={handleCommentSubmit}
+            className="mt-2"
+            color="primary"
+          >
             Submit
           </Button>
         </div>

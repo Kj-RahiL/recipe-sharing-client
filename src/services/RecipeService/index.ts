@@ -115,6 +115,7 @@ export const commentOnRecipe = async (recipeId: string, comment: string) => {
         "Content-Type": "application/json", 
       }
     });
+    console.log(data)
     revalidateTag("RECIPE")
     return data
   } catch (error) {
@@ -122,10 +123,10 @@ export const commentOnRecipe = async (recipeId: string, comment: string) => {
     throw error;
   }
 };
-export const rateRecipe = async (recipeId:string, rateData: {}) => {
+export const rateRecipe = async (recipeId:string, rate: number) => {
   const token = cookies().get("accessToken")?.value;
   try {
-    const {data} = await nexiosInstance.post(`/recipe/comment/${recipeId}`, rateData, {
+    const {data} = await nexiosInstance.post(`/recipe/comment/${recipeId}`, {rate}, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json", 
