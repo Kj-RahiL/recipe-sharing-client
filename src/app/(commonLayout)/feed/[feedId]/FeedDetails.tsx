@@ -2,10 +2,10 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { getRecipeById } from "@/services/RecipeService"; // Icons
+import StarRatings from "react-star-ratings"; 
 import { Textarea, Button, Avatar } from "@nextui-org/react"; // For comment input
 import { Ellipsis, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useUser } from "@/context/user.provider";
@@ -17,8 +17,10 @@ const FeedDetails = () => {
   const { user } = useUser();
   const { feedId } = useParams();
   const { data, isLoading, error } = useGetRecipeById(feedId as string);
-  const { upvoteMutation, downvoteMutation, commentMutation, rateMutation,  } = useRecipe();
+  const { upvoteMutation, downvoteMutation, commentMutation, rateMutation } =
+    useRecipe();
   const [comment, setComment] = useState<string>(""); // Comment input state
+  const [rating, setRating] = useState<number>(0); // Rating state
   const recipe = data?.data;
   const recipeId = feedId as string;
 
@@ -30,6 +32,12 @@ const FeedDetails = () => {
     }
     commentMutation.mutate({ recipeId, comment });
     setComment("");
+  };
+
+  // Handle Rating 
+  const handleRatingChange = (newRating: number) => {
+    setRating(newRating);
+    rateMutation.mutate({ recipeId, rate: newRating });
   };
 
   // Handle share functionality
@@ -75,15 +83,34 @@ const FeedDetails = () => {
         className="rounded-lg mb-6 h-96"
       />
       <p className="text-lg mb-4">{recipe.description}</p>
-      <p>
-        <strong>Cooking Time:</strong> {recipe.cookingTime}
-      </p>
-      <p>
-        <strong>Servings:</strong> {recipe.servings}
-      </p>
-      <p>
-        <strong>Difficulty:</strong> {recipe.difficulty}
-      </p>
+      <div className="flex justify-between">
+        <div>
+          
+          <p>
+            <strong>Cooking Time:</strong> {recipe.cookingTime}
+          </p>
+          <p>
+            <strong>Servings:</strong> {recipe.servings}
+          </p>
+          <p>
+            <strong>Difficulty:</strong> {recipe.difficulty}
+          </p>
+        </div>
+
+        {/* Rating Component */}
+        <div className="flex flex-col items-center">
+          <p className="text-lg font-semibold mb-2">Rate this recipe</p>
+          <StarRatings
+            rating={rating}
+            starRatedColor="gold"
+            changeRating={handleRatingChange}
+            numberOfStars={5}
+            name="rating"
+            starDimension="30px"
+            starSpacing="5px"
+          />
+        </div>
+      </div>
 
       {/* Ingredients */}
       <div className="mt-6">

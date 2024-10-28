@@ -123,10 +123,10 @@ export const commentOnRecipe = async (recipeId: string, comment: string) => {
     throw error;
   }
 };
-export const rateRecipe = async (recipeId:string, rate: number) => {
+export const rateRecipe = async (recipeId:string, rating: number) => {
   const token = cookies().get("accessToken")?.value;
   try {
-    const {data} = await nexiosInstance.post(`/recipe/comment/${recipeId}`, {rate}, {
+    const {data} = await nexiosInstance.post(`/recipe/rate/${recipeId}`, {rating}, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json", 

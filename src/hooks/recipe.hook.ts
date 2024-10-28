@@ -75,6 +75,7 @@ export const useRecipe = () => {
   const rateMutation = useMutation({
     mutationFn: ({recipeId, rate}:{ recipeId: string, rate:number}) => rateRecipe(recipeId, rate),
     onSuccess: (res:any) => {
+      console.log(res)
       queryClient.invalidateQueries({queryKey: ["RECIPE"]});
       toast.success(res?.message);
     },
