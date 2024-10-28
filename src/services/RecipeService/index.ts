@@ -22,8 +22,9 @@ export const createRecipe = async (recipeData:any) => {
 //   console.log(data);
 //   return data;
 // };
-export const getAllRecipe = async () => {
+export const getAllRecipe = async (searchTerm : string, sort:string ) => {
   const { data } = await nexiosInstance.get(`/recipe`, {
+    params: { searchTerm, sort },
     next: {
       tags: ['RECIPE']
     }

@@ -11,12 +11,17 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { TRecipe } from "@/types";
 
-const FeedCard = () => {
+const FeedCard = ({searchParams } : any) => {
+  const { searchTerm, sortOption  } = searchParams;
   const { user } = useUser();
   const router = useRouter();
 
+
   // Fetch all recipes using the hook
-  const { data: recipes = { data: [] }, isLoading, isError } = useGetAllRecipe();
+  const { data: recipes = { data: [] }, isLoading, isError } = useGetAllRecipe({
+    searchTerm,
+    sort: sortOption,
+  });
   const { upvoteMutation, downvoteMutation, commentMutation } = useRecipe();
   const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
   const [comment, setComment] = useState("");

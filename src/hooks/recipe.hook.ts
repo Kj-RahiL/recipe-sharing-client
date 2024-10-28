@@ -18,10 +18,10 @@ export const useCreateRecipe = () => {
   });
 };
 
-export const useGetAllRecipe = () => {
+export const useGetAllRecipe = ({ searchTerm, sort }) => {
   return useQuery({
-    queryKey: ["RECIPE"],
-    queryFn: async () => await getAllRecipe()
+    queryKey: ["RECIPE", searchTerm, sort  ],
+    queryFn: async () => await getAllRecipe(searchTerm, sort)
   });
 };
 export const useGetRecipeById = (feedId:string) => {
