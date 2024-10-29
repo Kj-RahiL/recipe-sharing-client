@@ -3,6 +3,7 @@ import { useState } from "react";
 import FeedCard from "../components/feed/FeedCard";
 import SidebarSection from "./SidebarSection";
 import { useRouter } from "next/navigation";
+import InfiniteCard from "../components/feed/InfinityCard";
 
 const FeedItem = () => {
   const router = useRouter();
@@ -45,6 +46,8 @@ const FeedItem = () => {
         {/* Post Feed Section */}
         <div className="w-full p-6 overflow-y-auto max-h-screen">
           <FeedCard searchParams={{ searchTerm, sortOption }}/>
+          
+           {/* <InfiniteCard/> */}
         </div>
       </div>
       {/* Sticky Sidebar Section */}

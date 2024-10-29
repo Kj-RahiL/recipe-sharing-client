@@ -3,7 +3,6 @@
 
 import nexiosInstance from "@/config/nexios.config";
 import { RecipeResponse } from "@/types";
-import { log } from "console";
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
@@ -22,15 +21,14 @@ export const createRecipe = async (recipeData:any) => {
 //   console.log(data);
 //   return data;
 // };
-export const getAllRecipe = async (searchTerm : string, sort:string ) => {
-  const { data } = await nexiosInstance.get(`/recipe`, {
-    params: { searchTerm, sort },
+export const getAllRecipe = async (pageParam:number=1, searchTerm:string , sort :string ) => {
+  const {data} = await nexiosInstance.get(`/recipe`, {
+    params: { searchTerm, sort, limit:10, page:pageParam},
     next: {
       tags: ['RECIPE']
     }
   });
-  // console.log(data, 'ree');
-  return data;
+  return data
 };
 
 export const getRecipeById = async (id: string) => {

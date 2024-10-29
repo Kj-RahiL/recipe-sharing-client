@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { commentOnRecipe, createRecipe, downvoteRecipe, getAllRecipe, getRecipeById, rateRecipe, upvoteRecipe } from "@/services/RecipeService";
-import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -18,10 +18,24 @@ export const useCreateRecipe = () => {
   });
 };
 
-export const useGetAllRecipe = ({ searchTerm, sort }) => {
-  return useQuery({
-    queryKey: ["RECIPE", searchTerm, sort  ],
-    queryFn: async () => await getAllRecipe(searchTerm, sort)
+// Hook using useInfiniteQuery for infinite scrolling
+export const useGetAllRecipe = (searchTerm: string, sort: string) => {
+  return useInfiniteQuery({
+    queryKey: ['RECIPE', searchTerm, sort],
+    queryFn: async({ pageParam }) => await getAllRecipe(pageParam, searchTerm, sort),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      {
+        if (lastPage.page + 10 > lastPage.pageCount) {
+            return false;
+        }
+        return lastPage.page + 10;
+    }
+    },
+    getPreviousPageParam: (firstPage) => {
+      const prevPage = firstPage.page - 1;
+      return prevPage > 0 ? prevPage : undefined;
+    },
   });
 };
 export const useGetRecipeById = (feedId:string) => {

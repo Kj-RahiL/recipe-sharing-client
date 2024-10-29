@@ -7,9 +7,10 @@ import { MessageCircle, Share2, ThumbsUp, ThumbsDown } from "lucide-react";
 import { Avatar } from "@nextui-org/react";
 import { useGetAllRecipe, useRecipe } from "@/hooks/recipe.hook";
 import { useUser } from "@/context/user.provider";
-import { useState } from "react";
+import {  useState } from "react";
 import { toast } from "sonner";
 import { TRecipe } from "@/types";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const FeedCard = ({searchParams } : any) => {
   const { searchTerm, sortOption  } = searchParams;
@@ -18,14 +19,15 @@ const FeedCard = ({searchParams } : any) => {
 
 
   // Fetch all recipes using the hook
-  const { data: recipes = { data: [] }, isLoading, isError } = useGetAllRecipe({
+  const { data, fetchNextPage, hasNextPage, isLoading, isError, } = useGetAllRecipe(
     searchTerm,
-    sort: sortOption,
-  });
+     sortOption,
+  );
   const { upvoteMutation, downvoteMutation, commentMutation } = useRecipe();
   const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
   const [comment, setComment] = useState("");
-  const recipeData = (recipes as { data: TRecipe[] }).data;
+  const recipes = data?.pages.flatMap((page) => page.data) || [];
+  console.log(recipes)
 
   const toggleCommentInput = (id: string) => {
     setActiveCommentId(activeCommentId === id ? null : id); // Toggle comment input
@@ -55,7 +57,7 @@ const FeedCard = ({searchParams } : any) => {
     }
   };
 
-  console.log(recipeData);
+ 
 
   const handleFeedClick = (id: string) => router.push(`/feed/${id}`);
   const handleUserClick = (id: string) => router.push(`/user/${id}`);
@@ -64,8 +66,15 @@ const FeedCard = ({searchParams } : any) => {
   if (isError) return <p>Failed to load recipes.</p>;
 
   return (
+    <InfiniteScroll
+    dataLength={recipes ? recipes?.length : 0}
+    next={fetchNextPage}
+    hasMore={hasNextPage}
+    loader={<p>Loading more recipes...</p>}
+>
+
     <div className="grid grid-cols-1">
-      {recipeData?.map((feed: TRecipe) => (
+      {recipes?.map((feed: TRecipe) => (
         <div
           key={feed?._id}
           className="p-4 mb-10 rounded-lg shadow-md cursor-pointer dark:bg-gray-900 dark:text-white light:bg-white"
@@ -75,14 +84,14 @@ const FeedCard = ({searchParams } : any) => {
             onClick={() => handleUserClick(feed.author._id!)}
           >
             <Avatar
-              src={feed.author.image}
-              alt={feed.author.name}
+              src={feed?.author?.image}
+              alt={feed.author?.name}
               size="md"
               className="rounded-full"
             />
             <div className="ml-3">
-              <p className="font-bold text-lg">{feed.author.name}</p>
-              <p className="text-gray-500 text-sm">{feed.author.email}</p>
+              <p className="font-bold text-lg">{feed.author?.name}</p>
+              <p className="text-gray-500 text-sm">{feed.author?.email}</p>
             </div>
           </div>
 
@@ -110,7 +119,7 @@ const FeedCard = ({searchParams } : any) => {
               }`}
             >
               <ThumbsUp className="w-5 h-5" />
-              <span>{feed.upVotes.length} Likes</span>
+              <span>{feed.upVotes?.length} Likes</span>
             </button>
             <button
               onClick={() => downvoteMutation.mutate(feed._id)}
@@ -119,7 +128,7 @@ const FeedCard = ({searchParams } : any) => {
               }`}
             >
               <ThumbsDown className="w-5 h-5" />
-              <span>{feed.downVotes.length} Dislikes</span>
+              <span>{feed.downVotes?.length} Dislikes</span>
             </button>
             <button
               onClick={() => toggleCommentInput(feed._id)}
@@ -163,6 +172,7 @@ const FeedCard = ({searchParams } : any) => {
         </div>
       ))}
     </div>
+    </InfiniteScroll>
   );
 };
 
