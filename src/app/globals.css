@@ -22,3 +22,25 @@
   .btn {
     @apply bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600;
   }
+
+  .button-bg {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    text-orientation: mixed;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+
+    /* Background gradient */
+    background: linear-gradient(to right, #04030e, #14387f, #00c8c4);
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.button-bg:hover {
+    /* Optional hover effect */
+    background: linear-gradient(to left, #3c72e2, #00c8c4, #2a226a);
+}
+
+

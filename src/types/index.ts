@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface IUser {
     id?: string;
     name: string;
@@ -8,6 +9,7 @@ export interface IUser {
     following:string[];
     followers:string[];
     bio?: string;
+    isPaid: boolean
   }
 
 export interface TUser {
@@ -21,6 +23,7 @@ export interface TUser {
     following:string[];
     followers:string[];
     bio?: string;
+    isPaid: boolean
   }
 
   

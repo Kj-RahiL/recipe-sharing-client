@@ -19,7 +19,7 @@ const DynamicProfile = () => {
 
   const fetchUser = async () => {
     const response = await getSingleUser(userId as string);
-    setUser(response?.data || null);
+    setUser(response?.data );
   };
 
   useEffect(() => {
@@ -75,7 +75,7 @@ const DynamicProfile = () => {
         </Tab>
         <Tab key="activity" title="Activity">
           <p className="font-semibold text-orange-500">Activity Content Here</p>
-          <p className="mt-10 text-gray-500">It's updating for the feature which post user</p>
+          <p className="mt-10 text-gray-500">It&apos;s updating for the feature which post user</p>
           <ul className="space-y-2">
             <li>Commented</li>
             <li>Rated</li>

@@ -24,7 +24,7 @@ export const useGetAllRecipe = (searchTerm: string, sort: string) => {
     queryKey: ['RECIPE', searchTerm, sort],
     queryFn: async({ pageParam }) => await getAllRecipe(pageParam, searchTerm, sort),
     initialPageParam: 1,
-    getNextPageParam: (lastPage) => {
+    getNextPageParam: (lastPage: any) => {
       {
         if (lastPage.page + 10 > lastPage.pageCount) {
             return false;
@@ -32,7 +32,7 @@ export const useGetAllRecipe = (searchTerm: string, sort: string) => {
         return lastPage.page + 10;
     }
     },
-    getPreviousPageParam: (firstPage) => {
+    getPreviousPageParam: (firstPage:any) => {
       const prevPage = firstPage.page - 1;
       return prevPage > 0 ? prevPage : undefined;
     },

@@ -55,6 +55,7 @@ export const getCurrentUser = async () => {
     followers: decodedToken?.followers,
     following: decodedToken?.following,
     status: decodedToken?.status,
+    isPaid: decodedToken?.isPaid
   };
 };
 
@@ -81,6 +82,7 @@ export const getNewAccessToken = async (): Promise<LoginResponse> => {
 
   return res.data; // Now this should be recognized as LoginResponse
 };
+
 export const changePassword = async(newFormData: any) => {
   const token = cookies().get("accessToken")?.value;
   // console.log("tok", {token})

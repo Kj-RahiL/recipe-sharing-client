@@ -3,59 +3,26 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { MessageCircle, Share2, ThumbsUp, ThumbsDown } from "lucide-react";
 import { Avatar } from "@nextui-org/react";
-import { useGetAllRecipe, useRecipe } from "@/hooks/recipe.hook";
+import { useGetAllRecipe } from "@/hooks/recipe.hook";
 import { useUser } from "@/context/user.provider";
-import {  useState } from "react";
-import { toast } from "sonner";
 import { TRecipe } from "@/types";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useGetSingleUser } from "@/hooks/user.hook";
+import ShareComponent from "./ShareComponent";
 
-const FeedCard = ({searchParams } : any) => {
-  const { searchTerm, sortOption  } = searchParams;
+const FeedCard = ({ searchParams }: any) => {
+  const { searchTerm, sortOption } = searchParams;
   const { user } = useUser();
+  const { data: userData } = useGetSingleUser(user?.id as string);
+
   const router = useRouter();
 
-
   // Fetch all recipes using the hook
-  const { data, fetchNextPage, hasNextPage, isLoading, isError, } = useGetAllRecipe(
-    searchTerm,
-     sortOption,
-  );
-  const { upvoteMutation, downvoteMutation, commentMutation } = useRecipe();
-  const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
-  const [comment, setComment] = useState("");
-  const recipes = data?.pages.flatMap((page) => page.data) || [];
-  console.log(recipes)
-
-  const toggleCommentInput = (id: string) => {
-    setActiveCommentId(activeCommentId === id ? null : id); // Toggle comment input
-    setComment(""); // Clear comment field when toggling
-  };
-
-  const handleCommentSubmit = (feedId: string) => {
-    if (!comment.trim()) {
-      toast.error("Comment cannot be empty!");
-      return;
-    }
-    commentMutation.mutate({recipeId: feedId, comment})
-    setComment(""); 
-  };
-
-  const handleShare = (title: string) => {
-    if (navigator.share) {
-      navigator
-        .share({
-          title,
-          text: "Check out this amazing recipe!",
-          url: window.location.href,
-        })
-        .catch((error) => console.error("Error sharing:", error));
-    } else {
-      alert("Share feature not supported in this browser.");
-    }
-  };
+  const { data, fetchNextPage, hasNextPage, isLoading, isError } =
+    useGetAllRecipe(searchTerm, sortOption);
+  const recipes = data?.pages.flatMap((page: any) => page.data) || [];
+  console.log(recipes);
 
  
 
@@ -67,111 +34,82 @@ const FeedCard = ({searchParams } : any) => {
 
   return (
     <InfiniteScroll
-    dataLength={recipes ? recipes?.length : 0}
-    next={fetchNextPage}
-    hasMore={hasNextPage}
-    loader={<p>Loading more recipes...</p>}
->
-
-    <div className="grid grid-cols-1">
-      {recipes?.map((feed: TRecipe) => (
-        <div
-          key={feed?._id}
-          className="p-4 mb-10 rounded-lg shadow-md cursor-pointer dark:bg-gray-900 dark:text-white light:bg-white"
-        >
+      dataLength={recipes ? recipes?.length : 0}
+      next={fetchNextPage}
+      hasMore={hasNextPage}
+      loader={<p>Loading more recipes...</p>}
+    >
+      <div className="grid grid-cols-1">
+        {recipes?.map((feed: TRecipe) => (
           <div
-            className="flex items-center mb-4"
-            onClick={() => handleUserClick(feed.author._id!)}
+            key={feed?._id}
+            className="p-4 mb-10 rounded-lg shadow-md cursor-pointer dark:bg-gray-900 dark:text-white light:bg-white"
           >
-            <Avatar
-              src={feed?.author?.image}
-              alt={feed.author?.name}
-              size="md"
-              className="rounded-full"
-            />
-            <div className="ml-3">
-              <p className="font-bold text-lg">{feed.author?.name}</p>
-              <p className="text-gray-500 text-sm">{feed.author?.email}</p>
-            </div>
-          </div>
-
-          <div onClick={() => handleFeedClick(feed._id)}>
-            <Image
-              src={feed.image}
-              alt={feed.title}
-              width={600}
-              height={300}
-              className="rounded-lg h-96 mb-3"
-            />
-            <div>
-              <p className="font-bold text-lg">{feed.title}</p>
-              <p className="text-gray-500 text-sm">{feed.description}</p>
-              <p>{feed.cookingTime}</p>
-              <p>{feed.difficulty}</p>
-            </div>
-          </div>
-
-          <div className="flex justify-around mt-4 text-gray-600">
-            <button
-              onClick={() => upvoteMutation.mutate(feed._id)}
-              className={`flex items-center space-x-1 ${
-                feed.upVotes?.includes(user?.id) ? "text-blue-600" : ""
-              }`}
+            <div
+              className="flex items-center mb-4"
+              onClick={() => handleUserClick(feed.author._id!)}
             >
-              <ThumbsUp className="w-5 h-5" />
-              <span>{feed.upVotes?.length} Likes</span>
-            </button>
-            <button
-              onClick={() => downvoteMutation.mutate(feed._id)}
-              className={`flex items-center space-x-1 ${
-                feed.downVotes?.includes(user?.id) ? "text-amber-600" : ""
-              }`}
-            >
-              <ThumbsDown className="w-5 h-5" />
-              <span>{feed.downVotes?.length} Dislikes</span>
-            </button>
-            <button
-              onClick={() => toggleCommentInput(feed._id)}
-              className="flex items-center space-x-1"
-            >
-              <MessageCircle className="w-5 h-5" />
-              <span>Comment</span>
-            </button>
-            <button
-              onClick={() => handleShare(feed?.title)}
-              className="flex items-center space-x-1"
-            >
-              <Share2 className="w-5 h-5" />
-              <span>Share</span>
-            </button>
-          </div>
-          {/* Comment Input Field */}
-          {activeCommentId === feed._id && (
-            <div className="mt-4 flex items-center space-x-2">
               <Avatar
-                src={user?.image}
-                alt={user?.name}
+                src={feed?.author?.image}
+                alt={feed.author?.name}
                 size="md"
                 className="rounded-full"
               />
-              <input
-                type="text"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Write a comment..."
-                className="flex-1 p-2 border rounded-lg dark:bg-gray-800 dark:text-white"
-              />
-              <button
-                onClick={() => handleCommentSubmit(feed._id)}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-              >
-                Submit
-              </button>
+              <div className="ml-3">
+                <p className="font-bold text-lg">{feed.author?.name}</p>
+                <p className="text-gray-500 text-sm">{feed.author?.email}</p>
+              </div>
             </div>
-          )}
-        </div>
-      ))}
-    </div>
+
+            <div onClick={() => handleFeedClick(feed._id)}>
+              {/* Apply blur only when premium and user is not paid */}
+              <div
+                className={`relative ${
+                  feed.isPremium && !userData?.data?.isPaid
+                    ? "blur-sm brightness-150"
+                    : ""
+                }`}
+              >
+                <Image
+                  src={feed.image}
+                  alt={feed.title}
+                  width={600}
+                  height={300}
+                  className="rounded-lg h-96 mb-3 object-cover"
+                />
+
+                {/* Exclusive overlay (better contrast and visibility) */}
+                {feed.isPremium && !userData?.data?.isPaid && (
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent navigation to recipe details
+                      router.push("/payment"); // Redirect to payment page
+                    }}
+                    className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center rounded-lg cursor-pointer"
+                  >
+                    <span
+                      className="relative z-10 text-white text-2xl font-extrabold shadow-lg px-4 py-2 rounded-md"
+                      style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)" }}
+                    >
+                      Exclusive - Click to Access
+                    </span>
+                  </div>
+                )}
+
+                {/* Recipe info - Always visible */}
+                <div>
+                  <p className="font-bold text-lg">{feed.title}</p>
+                  <p className="text-gray-500 text-sm">{feed.description}</p>
+                  <p>{feed.cookingTime} mins</p>
+                  <p>{feed.difficulty}</p>
+                </div>
+              </div>
+            </div>
+
+           <ShareComponent feed={feed} user={userData?.data}/>
+          </div>
+        ))}
+      </div>
     </InfiniteScroll>
   );
 };

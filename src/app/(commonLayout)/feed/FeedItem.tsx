@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState } from "react";
 import FeedCard from "../components/feed/FeedCard";
 import SidebarSection from "./SidebarSection";
 import { useRouter } from "next/navigation";
-import InfiniteCard from "../components/feed/InfinityCard";
 
 const FeedItem = () => {
   const router = useRouter();
