@@ -13,6 +13,7 @@ import ShareComponent from "./ShareComponent";
 
 const FeedCard = ({ searchParams }: any) => {
   const { searchTerm, sortOption } = searchParams;
+  console.log(searchParams, 'fee')
   const { user } = useUser();
   const { data: userData } = useGetSingleUser(user?.id as string);
 
@@ -49,21 +50,21 @@ const FeedCard = ({ searchParams }: any) => {
             >
               <Avatar
                 src={feed?.author?.image}
-                alt={feed.author?.name}
+                alt={feed?.author?.name}
                 size="md"
                 className="rounded-full"
               />
               <div className="ml-3">
-                <p className="font-bold text-lg">{feed.author?.name}</p>
-                <p className="text-gray-500 text-sm">{feed.author?.email}</p>
+                <p className="font-bold text-lg">{feed?.author?.name}</p>
+                <p className="text-gray-500 text-sm">{feed?.author?.email}</p>
               </div>
             </div>
 
-            <div onClick={() => handleFeedClick(feed._id)}>
+            <div onClick={() => handleFeedClick(feed?._id)}>
               {/* Apply blur only when premium and user is not paid */}
               <div
                 className={`relative ${
-                  feed.isPremium && !userData?.data?.isPaid
+                  feed?.isPremium && !userData?.data?.isPaid
                     ? "blur-sm brightness-150"
                     : ""
                 }`}
@@ -85,17 +86,17 @@ const FeedCard = ({ searchParams }: any) => {
                     />
                   </svg>
                 </span>
-                <p className="absolute top-10 right-3 bg-green-500 text-white text-xs px-3 py-2 rounded-full flex items-center space-x-1">{feed.cookingTime} min</p>
+                <p className="absolute top-10 right-3 bg-green-500 text-white text-xs px-3 py-2 rounded-full flex items-center space-x-1">{feed?.cookingTime} min</p>
                 <Image
-                  src={feed.image}
-                  alt={feed.title}
+                  src={feed?.image}
+                  alt={feed?.title}
                   width={600}
                   height={300}
                   className="rounded-lg h-64 md:h-96 mb-3 object-cover"
                 />
 
                 {/* Exclusive overlay (better contrast and visibility) */}
-                {feed.isPremium && !userData?.data?.isPaid && (
+                {feed?.isPremium && !userData?.data?.isPaid && (
                   <div
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent navigation to recipe details
@@ -114,8 +115,8 @@ const FeedCard = ({ searchParams }: any) => {
 
                 {/* Recipe info - Always visible */}
                 <div>
-                  <p className="font-bold text-lg">{feed.title}</p>
-                  <p className="text-gray-500 text-sm">{feed.description}</p>
+                  <p className="font-bold text-lg">{feed?.title}</p>
+                  <p className="text-gray-500 text-sm">{feed?.description}</p>
                 </div>
               </div>
             </div>

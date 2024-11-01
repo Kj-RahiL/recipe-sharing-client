@@ -94,8 +94,29 @@ export interface TUser {
     message: string;
     data?: RecipeFormData;
   }
+  export interface UPdateRecipeResponse {
+    success: boolean;
+    message: string;
+    data?: TRecipe;
+  }
+
+  export interface GetRecipeResponse {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;
+    data: TRecipe[];
+  }
 
   export interface UserResponse {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: TUser[];
+  }
+  export interface SingleUserResponse {
     success: boolean;
     statusCode: number;
     message: string;

@@ -4,10 +4,11 @@ import { ChevronLeft, MenuIcon, SearchCheck } from "lucide-react";
 import React from "react";
 import { useSidebarContext } from "../../layout/layout-context";
 import UserDropdown from "./user-dropdown";
-
+import { useSearchContext } from "../searchContext/search-context";
 
 const DashboardNavbar = ({ children }: { children: React.ReactNode }) => {
   const { collapsed, setCollapsed } = useSidebarContext();
+  const { setSearchValue } = useSearchContext();
   return (
     <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden z-10">
       <Navbar
@@ -20,7 +21,6 @@ const DashboardNavbar = ({ children }: { children: React.ReactNode }) => {
         <NavbarContent className="md:hidden">
           {collapsed ? (
             <ChevronLeft onClick={setCollapsed}> </ChevronLeft>
-           
           ) : (
             <MenuIcon onClick={setCollapsed}></MenuIcon>
           )}
@@ -29,6 +29,7 @@ const DashboardNavbar = ({ children }: { children: React.ReactNode }) => {
           <Input
             startContent={<SearchCheck />}
             isClearable
+            onChange={(e) => setSearchValue(e.target.value)} 
             className="w-full"
             classNames={{
               input: "w-full",

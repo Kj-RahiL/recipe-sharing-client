@@ -40,9 +40,7 @@ const RecipeForm: React.FC = () => {
         tags: data.tags.split(',').map((tag: any) => tag.trim()),
         author: user?.id, 
       };
-    console.log("Submitted Data:", data);
     const response = await createRecipe(processedData)
-    console.log(response, 'subit')
     toast.success(response?.message)
     reset(); 
   };
@@ -110,7 +108,9 @@ const RecipeForm: React.FC = () => {
           </label>
           <input
             type="number"
-            {...register("servings")}
+            {...register("servings", {
+              required: "Servings is required",
+            })}
             className="input-field"
             placeholder="e.g., 4"
           />
@@ -120,7 +120,9 @@ const RecipeForm: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Difficulty
           </label>
-          <select {...register("difficulty")} className="input-field">
+          <select {...register("difficulty", {
+              required: "Difficulty is required",
+            })} className="input-field">
             <option value="Easy">Easy</option>
             <option value="Medium">Medium</option>
             <option value="Hard">Hard</option>
@@ -133,12 +135,16 @@ const RecipeForm: React.FC = () => {
         {ingredientFields.map((field, index) => (
           <div key={field.id} className="flex items-center space-x-4">
             <input
-              {...register(`ingredients.${index}.name`)}
+              {...register(`ingredients.${index}.name` , {
+                required: "ingredients name is required",
+              } )}
               placeholder="Name"
               className="input-field flex-1"
             />
             <input
-              {...register(`ingredients.${index}.quantity`)}
+              {...register(`ingredients.${index}.quantity`, {
+                required: "quantity is required",
+              })}
               placeholder="Quantity"
               className="input-field flex-1"
             />
@@ -170,13 +176,17 @@ const RecipeForm: React.FC = () => {
         {stepFields.map((field, index) => (
           <div key={field.id} className="flex items-center space-x-4 ">
             <input
-              {...register(`steps.${index}.description`)}
+              {...register(`steps.${index}.description`, {
+                required: "Step description is required",
+              })}
               placeholder="Description"
               className="input-field flex-1"
             />
             <input
               type="number"
-              {...register(`steps.${index}.duration`)}
+              {...register(`steps.${index}.duration`, {
+                required: "Steps duration is required",
+              })}
               placeholder="Duration (minutes)"
               className="input-field flex-1"
             />
@@ -203,7 +213,9 @@ const RecipeForm: React.FC = () => {
           Categories (comma-separated)
         </label>
         <input
-          {...register("category")}
+          {...register("category", {
+            required: "Category is required",
+          })}
           placeholder="e.g., Dessert, Snack"
           className="input-field"
         />

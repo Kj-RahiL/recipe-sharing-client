@@ -17,7 +17,7 @@ import { toast } from "sonner";
 const image_hosting_key = process.env.NEXT_PUBLIC_IMAGE_HOSTING_API;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
-const UpdatedProfile = ({ onClose }: any) => {
+const UpdatedProfile = ({ onClose, refetch }: any) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const { user } = useUser();
@@ -74,10 +74,11 @@ const UpdatedProfile = ({ onClose }: any) => {
 
     try {
       console.log(userData, "userr");
-      const res = await updateUser(user?.id, userData);
+      const res = await updateUser(user?.id ?? "", userData);
       console.log("User updated successfully:", res);
       if (res?.success) {
         toast.success(res.message);
+        refetch()
         onClose(); 
       } else {
         toast.error(res?.message || "Password change failed.");

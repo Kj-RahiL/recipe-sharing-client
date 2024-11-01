@@ -34,7 +34,7 @@ const UserCreatedPost = ({ userId }: UserCreatedPostProps) => {
   }, [userId]);
 
   const createdRecipes = recipes?.filter(
-    (recipe) => recipe.author._id === userId
+    (recipe) => recipe.author?._id === userId
   );
 
   return (

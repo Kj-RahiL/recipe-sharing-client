@@ -53,8 +53,8 @@ const RecipeForm: React.FC<RecipeFormProps> = ( {existingRecipe, onClose} ) => {
   } = useFieldArray({ control, name: "steps" });
 
   const onSubmit: SubmitHandler<RecipeFormData> = async (data) => {
-    const  { ...updateData } = {
-      ...data,
+    const  {author ,_id ,...updateData } = {
+      ...(data as any),
       category: Array.isArray(data.category)
         ? data.category
         : data.category.split(",").map((cat) => cat.trim()),
@@ -67,7 +67,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ( {existingRecipe, onClose} ) => {
 const create = { ...updateData, author: user?.id };
 
   
-    console.log(updateData, 'esss');
+    console.log({_id, author}, 'esss');
 
     try {
       let response;
@@ -75,12 +75,13 @@ const create = { ...updateData, author: user?.id };
         // Update recipe if editing
         response = await updateRecipe(existingRecipe?._id, updateData);
         console.log(response)
-        toast.success("Recipe updated successfully!");
+        toast.success(response.message);
         onClose()
       } else {
         // Create new recipe if no existing recipe data
         response = await createRecipe(create);
-        toast.success("Recipe created successfully!");
+        console.log(response, 'created')
+        toast.success(response.message);
       }
       console.log(response);
       reset();
@@ -131,7 +132,9 @@ const create = { ...updateData, author: user?.id };
             Image URL
           </label>
           <input
-            {...register("image")}
+            {...register("image", {
+              required: "Image is required",
+            })}
             className="input-field"
             placeholder="https://example.com/image.jpg"
           />

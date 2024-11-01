@@ -1,14 +1,7 @@
-import FeedCard from "@/app/(commonLayout)/components/feed/FeedCard";
+import AdminHome from "./components/AdminHome";
 
 const AdminDashboard = () => {
-    return (
-        <div className="mx-10">
-            {/* <FeedCard/>
-             */}
-
-             <h2>hello</h2>
-        </div>
-    );
+  return <AdminHome />;
 };
 
 export default AdminDashboard;

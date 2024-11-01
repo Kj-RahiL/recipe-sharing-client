@@ -2,7 +2,7 @@
 "use server";
 
 import nexiosInstance from "@/config/nexios.config";
-import { RecipeResponse } from "@/types";
+import { GetRecipeResponse, RecipeResponse, UPdateRecipeResponse } from "@/types";
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
@@ -17,17 +17,18 @@ export const getManageRecipe = async () => {
   const { data } = await nexiosInstance.get(`/recipe`, {
     cache: "no-store",
   });
-  console.log(data);
+  // console.log(data);
   return data;
 };
 export const getAllRecipe = async (pageParam:number=1, searchTerm:string , sort:string ) => {
-  const {data} = await nexiosInstance.get(`/recipe`, {
+  const {data} = await nexiosInstance.get<GetRecipeResponse>(`/recipe`, {
     params: { searchTerm, sort, limit:10, page:pageParam},
     next: {
       tags: ['RECIPE']
-    }
+    },
+    cache: 'no-store'
   });
-  console.log(data, 'recipee')
+  // console.log(data, 'recipee')
   return data
 
 };
@@ -43,7 +44,7 @@ export const getRecipeById = async (id: string) => {
 export const updateRecipe = async (id: string, updateData: any) => {
   // console.log({id, updateData})
   try {
-    const { data } = await nexiosInstance.put(`/recipe/${id}`, updateData, {
+    const { data } = await nexiosInstance.put<UPdateRecipeResponse>(`/recipe/${id}`, updateData, {
       cache: "no-store",
     });
     console.log(`Updated recipe: ${id}`, data);

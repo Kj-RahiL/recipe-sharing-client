@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import { followUser, getAllUsers, getSingleUser, unFollowUser } from "@/services/UsersService";
-import { UserResponse } from "@/types";
+import { SingleUserResponse, UserResponse } from "@/types";
 import { useMutation, useQuery  } from "@tanstack/react-query";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
@@ -34,16 +34,16 @@ export const useUserUnFollow = () => {
 };
 
 export const useGetSingleUser = (id: string) => {
-  return useQuery<UserResponse, Error>({
+  return useQuery<SingleUserResponse, Error>({
     queryKey: ["SINGLE_USER", id], 
     queryFn: async () => {
       const response = await getSingleUser(id); 
-      return response as UserResponse; 
+      return response as SingleUserResponse; 
     },
   });
 };
 export const useGetAllUser = () => {
-  return useQuery<UserResponse>({
+  return useQuery<UserResponse, Error>({
     queryKey: ["ALL_USER"],
     queryFn: async () => await getAllUsers()
   });

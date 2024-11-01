@@ -12,7 +12,7 @@ import UpdatedProfile from "./UpdatedProfile";
 import ChangePassword from "./ChangePassword";
 import CustomModal from "@/app/(dashboardLayout)/components/modal/CustomModal";
 
-const EllipsisDropDown = () => {
+const EllipsisDropDown = ({refetch}:any) => {
     const updateProfileDisclosure = useDisclosure(); // Manage Update Profile Modal
     const changePasswordDisclosure = useDisclosure(); 
   return (
@@ -42,7 +42,7 @@ const EllipsisDropDown = () => {
         <ModalHeader className="flex flex-col gap-1">
           Update Your Profile
         </ModalHeader>
-        <UpdatedProfile onClose={updateProfileDisclosure.onClose} />
+        <UpdatedProfile onClose={updateProfileDisclosure.onClose} refetch={refetch}/>
       </CustomModal>
 
       <CustomModal

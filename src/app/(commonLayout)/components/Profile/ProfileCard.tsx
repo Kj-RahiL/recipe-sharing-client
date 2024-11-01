@@ -1,19 +1,29 @@
 /* ProfileCard.tsx */
 "use client";
 import { useUser } from "@/context/user.provider";
-import { Tabs, Tab } from "@nextui-org/react";
+import { Tabs, Tab, Input, Button, useDisclosure, ModalHeader } from "@nextui-org/react";
 import UserCreatedPost from "./UserCreatedPost";
 import { useGetSingleUser } from "@/hooks/user.hook";
 import EllipsisDropDown from "./EllipsisDropDown";
 import Image from "next/image";
+import CustomModal from "@/app/(dashboardLayout)/components/modal/CustomModal";
+import UpdateRecipe from "@/app/(commonLayout)/components/feed/UpdateRecipe";
+
 
 const ProfileCard = () => {
   const { user } = useUser();
-  const { data, isLoading } = useGetSingleUser(user?.id as string);
+  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
+  const { data, isLoading, refetch } = useGetSingleUser(user?.id as string);
   const profileData = data?.data;
   if (isLoading) {
     return <div>Loading...</div>;
   }
+  const handleCreated = () => {
+    onOpen();
+  };
+  const handleModalClose = () => {
+    onClose()
+  };
   return (
     <div className="p-6 max-w-lg mx-auto">
       {/* Header Section */}
@@ -36,21 +46,45 @@ const ProfileCard = () => {
               <span>·</span>
               <span>{profileData?.followers?.length ?? 0} Followers</span>
             </div>
-            <p className="text-sm text-gray-800 dark:text-gray-300">{profileData?.bio}</p>
+            <p className="text-sm text-gray-800 dark:text-gray-300">
+              {profileData?.bio}
+            </p>
           </div>
         </div>
-        <EllipsisDropDown />
+        <EllipsisDropDown refetch={refetch}/>
       </div>
 
       {/* Tabs Section */}
       <Tabs aria-label="Profile Options" className="mb-4">
         <Tab key="created" title="Created">
+          <Input
+          onClick={() => handleCreated()}
+            type="text"
+            placeholder="What's On Your Mind..."
+            className="mb-4"
+          />
           <UserCreatedPost userId={user?.id as string} />
         </Tab>
         <Tab key="activity" title="Activity">
           <p className="font-semibold text-orange-500">Activity Content Here</p>
+          <Button onClick={() => handleCreated()} className="button-bg mt-4">Post Recipe</Button>
         </Tab>
       </Tabs>
+
+      {/* edit modal */}
+      <CustomModal
+        size="xl"
+        scrollBehavior="outside"
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      >
+        <ModalHeader className="flex flex-col gap-1">
+          Create Your Recipe
+        </ModalHeader>
+        <UpdateRecipe
+          onClose={handleModalClose}
+        />
+      </CustomModal>
     </div>
   );
 };

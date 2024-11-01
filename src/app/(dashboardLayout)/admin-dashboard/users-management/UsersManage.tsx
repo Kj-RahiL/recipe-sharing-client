@@ -16,6 +16,7 @@ import { TUser } from "@/types";
 
 const UserManage = () => {
   const { data: users, isLoading, error, isSuccess, refetch } = useGetAllUser();
+  const userData = users?.data as TUser[]
 
   // Handle user deletion
   const handleDelete = async (id: string) => {
@@ -71,7 +72,7 @@ const UserManage = () => {
         <TableColumn>ACTIONS</TableColumn>
       </TableHeader>
       <TableBody>
-        {users?.data.map((user: TUser) => (
+        {userData?.map((user: TUser) => (
           <TableRow key={user._id}>
             <TableCell>{user.name}</TableCell>
             <TableCell>{user.email}</TableCell>

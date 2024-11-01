@@ -2,7 +2,7 @@
 "use server";
 
 import nexiosInstance from "@/config/nexios.config";
-import { UserResponse } from "@/types";
+import { SingleUserResponse, UserResponse } from "@/types";
 import { revalidateTag } from "next/cache";
 
 export const getAllUsers = async () => {
@@ -12,7 +12,7 @@ export const getAllUsers = async () => {
   return data;
 };
 export const getSingleUser = async (id:string) => {
-  const { data } = await nexiosInstance.get<UserResponse>(`/user/${id}`, {
+  const { data } = await nexiosInstance.get<SingleUserResponse>(`/user/${id}`, {
     next: { tags: ["Users"] },
   });
   return data;
@@ -65,7 +65,7 @@ export const deleteUser = async (id: string) => {
 
   export const updateUser = async (id: string, payload: any) => {
     try {
-      const { data } = await nexiosInstance.put(`/user/${id}`, payload);
+      const { data } = await nexiosInstance.put<SingleUserResponse>(`/user/${id}`, payload);
       revalidateTag("Users")
       console.log(`Updated user status: ${id}`, data);
       return data;

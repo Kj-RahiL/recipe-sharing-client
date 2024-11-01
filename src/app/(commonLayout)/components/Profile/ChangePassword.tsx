@@ -14,6 +14,7 @@ const ChangePassword = ({ onClose }: any) => {
     const res = await changePassword(newFormData);
     try {
       const res = await changePassword(newFormData);
+      console.log(res)
       if (res?.success) {
         toast.success(res.message);
         onClose(); 

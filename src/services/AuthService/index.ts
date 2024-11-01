@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import nexiosInstance from "@/config/nexios.config";
-import { LoginResponse, RegisterResponse } from "@/types";
+import { LoginResponse, RegisterResponse, SingleUserResponse } from "@/types";
 import { jwtDecode } from "jwt-decode";
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
@@ -84,9 +84,10 @@ export const getNewAccessToken = async (): Promise<LoginResponse> => {
 };
 
 export const changePassword = async(newFormData: any) => {
+
   const token = cookies().get("accessToken")?.value;
-  // console.log("tok", {token})
-  const {data} = await nexiosInstance.post("/auth/change-password", newFormData, {
+  console.log("tok", newFormData)
+  const {data} = await nexiosInstance.post<SingleUserResponse>("/auth/change-password", newFormData, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json", // Optional: Specify content type
@@ -94,7 +95,7 @@ export const changePassword = async(newFormData: any) => {
   });
   revalidateTag("Users");
 
-  // console.log(data)
+  console.log(data)
   // if (!data.success) {
   //   throw new Error(data.message || "Change Password failed");
   // }
