@@ -25,5 +25,6 @@ export function ThemeSwitcher() {
       isSelected={theme === "light" ? true : false}
       onValueChange={(e) => setTheme(e ? "light" : "dark")}
     />
+    
   );
 }

@@ -21,6 +21,7 @@ const DynamicProfile = () => {
     const response = await getSingleUser(userId as string);
     setUser(response?.data );
   };
+ 
 
   useEffect(() => {
     fetchUser();
@@ -28,6 +29,7 @@ const DynamicProfile = () => {
 
   const currentUser = user?._id === logUser?.id;
   const isFollowing = user?.followers?.includes(logUser?.id || "");
+  console.log(user?.followers, 'flow')
 
   const handleFollowToggle = () => {
     if (isFollowing) {
@@ -60,7 +62,7 @@ const DynamicProfile = () => {
         </div>
         {!currentUser && (
           <Button
-            className={`ml-auto ${isFollowing ? "bg-red-500" : "bg-blue-500"}`}
+            className={`ml-auto ${isFollowing ? "bg-gradient-to-tr from-neutral-900 via-gray-800 to-pink-600 text-white" : "button-bg"}`}
             onClick={handleFollowToggle}
           >
             {isFollowing ? "Unfollow" : "Follow"}

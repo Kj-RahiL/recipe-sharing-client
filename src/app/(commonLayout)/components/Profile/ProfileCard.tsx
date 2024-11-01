@@ -36,7 +36,7 @@ const ProfileCard = () => {
               <span>·</span>
               <span>{profileData?.followers?.length ?? 0} Followers</span>
             </div>
-            <p className="text-sm text-gray-800">{profileData?.bio}</p>
+            <p className="text-sm text-gray-800 dark:text-gray-300">{profileData?.bio}</p>
           </div>
         </div>
         <EllipsisDropDown />

@@ -2,12 +2,12 @@
 
 "use client";
 
-import {  useState } from "react";
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import StarRatings from "react-star-ratings"; 
+import StarRatings from "react-star-ratings";
 import { Textarea, Button, Avatar } from "@nextui-org/react"; // For comment input
-import { Ellipsis, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
+import { Ellipsis, Share2, Star, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useUser } from "@/context/user.provider";
 import { useGetRecipeById, useRecipe } from "@/hooks/recipe.hook";
 import { toast } from "sonner";
@@ -16,13 +16,23 @@ import { formatDistanceToNow } from "date-fns";
 const FeedDetails = () => {
   const { user } = useUser();
   const { feedId } = useParams();
-  const { data, isLoading, error } = useGetRecipeById(feedId as string);
+  const { data, isLoading } = useGetRecipeById(feedId as string);
   const { upvoteMutation, downvoteMutation, commentMutation, rateMutation } =
     useRecipe();
   const [comment, setComment] = useState<string>(""); // Comment input state
   const [rating, setRating] = useState<number>(0); // Rating state
   const recipe = data?.data;
   const recipeId = feedId as string;
+
+  // avg rating
+  const avgRating = recipe?.rating?.length
+    ? (
+        recipe.rating.reduce(
+          (sum: number, entry: any) => sum + entry.rating,
+          0
+        ) / recipe.rating.length
+      ).toFixed(2)
+    : "No ratings yet";
 
   // Handle comment submission
   const handleCommentSubmit = () => {
@@ -34,7 +44,7 @@ const FeedDetails = () => {
     setComment("");
   };
 
-  // Handle Rating 
+  // Handle Rating
   const handleRatingChange = (newRating: number) => {
     setRating(newRating);
     rateMutation.mutate({ recipeId, rate: newRating });
@@ -58,10 +68,10 @@ const FeedDetails = () => {
   if (isLoading) return <p>Loading...</p>;
 
   return (
-    <div className="p-8 max-w-3xl mx-auto bg-white rounded-lg shadow-lg">
-      <h1 className="text-3xl font-bold mb-4">{recipe.title}</h1>
+    <div className="p-8 max-w-3xl mx-auto bg-white rounded-lg shadow-lg dark:bg-gray-900">
+     
       {recipe.author && (
-        <div className="flex items-center mb-6">
+        <div className="flex items-center mb-6 ">
           <Image
             src={recipe.author.image}
             alt="Author avatar"
@@ -82,10 +92,10 @@ const FeedDetails = () => {
         height={400}
         className="rounded-lg mb-6 h-96"
       />
+       <h1 className="text-3xl font-bold mb-4">{recipe.title}</h1>
       <p className="text-lg mb-4">{recipe.description}</p>
       <div className="flex justify-between">
         <div>
-          
           <p>
             <strong>Cooking Time:</strong> {recipe.cookingTime}
           </p>
@@ -99,6 +109,10 @@ const FeedDetails = () => {
 
         {/* Rating Component */}
         <div className="flex flex-col items-center">
+          
+          <p className="text-lg font-semibold mb-2 flex items-center gap-1">
+            Avg Rate: <span className="text-[#999400]">{avgRating} </span><Star fill="#999400" color="#999400"/>
+          </p>
           <p className="text-lg font-semibold mb-2">Rate this recipe</p>
           <StarRatings
             rating={rating}
@@ -187,7 +201,7 @@ const FeedDetails = () => {
                       </p>
                     </div>
                     <div className="flex items-center">
-                      <p className="text-gray-500 text-xs mr-4">
+                      <p className="text-gray-500 dark:text-gray-300 text-xs mr-4">
                         {formatDistanceToNow(new Date(cmt.date), {
                           addSuffix: true,
                         })}
@@ -195,7 +209,7 @@ const FeedDetails = () => {
                       <Ellipsis />
                     </div>
                   </div>
-                  <p className="text-gray-800 text-base mt-2">{cmt.comment}</p>
+                  <p className="text-gray-800 dark:text-gray-300 text-base mt-2">{cmt.comment}</p>
                   <div className="flex space-x-6 mt-2 text-sm text-gray-500">
                     <button className="hover:underline">Like</button>
                     <button className="hover:underline">Reply</button>
@@ -216,8 +230,7 @@ const FeedDetails = () => {
           />
           <Button
             onClick={handleCommentSubmit}
-            className="mt-2"
-            color="primary"
+            className="mt-2 button-bg"
           >
             Submit
           </Button>

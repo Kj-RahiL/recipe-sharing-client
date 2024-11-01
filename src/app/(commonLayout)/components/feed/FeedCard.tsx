@@ -24,8 +24,6 @@ const FeedCard = ({ searchParams }: any) => {
   const recipes = data?.pages.flatMap((page: any) => page.data) || [];
   console.log(recipes);
 
- 
-
   const handleFeedClick = (id: string) => router.push(`/feed/${id}`);
   const handleUserClick = (id: string) => router.push(`/user/${id}`);
 
@@ -70,12 +68,30 @@ const FeedCard = ({ searchParams }: any) => {
                     : ""
                 }`}
               >
+                <span className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center space-x-1">
+                  <span>{feed?.difficulty}</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="w-4 h-4"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </span>
+                <p className="absolute top-10 right-3 bg-green-500 text-white text-xs px-3 py-2 rounded-full flex items-center space-x-1">{feed.cookingTime} min</p>
                 <Image
                   src={feed.image}
                   alt={feed.title}
                   width={600}
                   height={300}
-                  className="rounded-lg h-96 mb-3 object-cover"
+                  className="rounded-lg h-64 md:h-96 mb-3 object-cover"
                 />
 
                 {/* Exclusive overlay (better contrast and visibility) */}
@@ -100,13 +116,11 @@ const FeedCard = ({ searchParams }: any) => {
                 <div>
                   <p className="font-bold text-lg">{feed.title}</p>
                   <p className="text-gray-500 text-sm">{feed.description}</p>
-                  <p>{feed.cookingTime} mins</p>
-                  <p>{feed.difficulty}</p>
                 </div>
               </div>
             </div>
-{/* like, comment & share component */}
-           <ShareComponent feed={feed} user={userData?.data}/>
+            {/* like, comment & share component */}
+            <ShareComponent feed={feed} user={userData?.data} />
           </div>
         ))}
       </div>

@@ -8,7 +8,6 @@ import { toast } from "sonner";
 
 const ShareComponent = ({feed, user} : {feed:TRecipe, user?:TUser}) => {
  
-    
   const { upvoteMutation, downvoteMutation, commentMutation } = useRecipe();
   const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
   const [comment, setComment] = useState("");
@@ -42,7 +41,7 @@ const ShareComponent = ({feed, user} : {feed:TRecipe, user?:TUser}) => {
       };
     return (
         <div>
-             <div className="flex justify-around mt-4 text-gray-600">
+             <div className="flex justify-around items-center mt-4 text-gray-600">
               <button
                 onClick={() => upvoteMutation.mutate(feed._id)}
                 className={`flex items-center space-x-1 ${
@@ -52,30 +51,31 @@ const ShareComponent = ({feed, user} : {feed:TRecipe, user?:TUser}) => {
                 }`}
               >
                 <ThumbsUp
-                  className={`w-5 h-5 ${
+                  className={`w-5 h-5 flex items-center gap-1 ${
                     feed.upVotes?.includes(user?._id)
                       ? "fill-blue-500"
                       : "fill-none"
                   }`}
                 />
-                <span>{feed.upVotes?.length} Likes</span>
+                <span >{feed.upVotes?.length}</span>
+                <span className="hidden sm:block "> Likes</span>
               </button>
               <button
                 onClick={() => downvoteMutation.mutate(feed._id)}
                 className={`flex items-center space-x-1 ${
                   feed.downVotes?.includes(user?._id)
-                    ? "text-[#936316] text-medium"
+                    ? "text-pink-700 text-medium"
                     : ""
                 }`}
               >
                 <ThumbsDown
-                  className={`w-5 h-5 ${
+                  className={`w-5 h-5 flex items-center ${
                     feed.downVotes?.includes(user?._id)
-                      ? "fill-[#c4841d]"
+                      ? "fill-pink-700"
                       : "fill-none"
                   }`}
-                />
-                <span>{feed.downVotes?.length} Dislikes</span>
+                /><span>{feed.downVotes?.length}</span>
+                <span className="hidden sm:block"> Dislikes</span>
               </button>
               <button
                 onClick={() => toggleCommentInput(feed._id)}
@@ -90,36 +90,36 @@ const ShareComponent = ({feed, user} : {feed:TRecipe, user?:TUser}) => {
                     activeCommentId === feed._id ? "fill-blue-500" : "fill-none"
                   }`}
                 />
-                <span>Comment</span>
+                <span className="hidden sm:block">Comment</span>
               </button>
               <button
                 onClick={() => handleShare(feed?.title)}
                 className="flex items-center space-x-1"
               >
                 <Share2 className="w-5 h-5" />
-                <span>Share</span>
+                <span className="hidden sm:block">Share</span>
               </button>
             </div>
 
             {/* Comment Input Field */}
             {activeCommentId === feed._id && (
-              <div className="mt-4 flex items-center space-x-2">
+              <div className="mt-4 flex items-center justify-between space-x-2">
                 <Avatar
                   src={user?.image}
                   alt={user?.name}
                   size="md"
-                  className="rounded-full"
+                  className="rounded-full hidden sm:block"
                 />
                 <input
                   type="text"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   placeholder="Write a comment..."
-                  className="flex-1 p-2 border rounded-lg dark:bg-gray-800 dark:text-white"
+                  className="p-1 text-sm md:text-base md:p-2 flex-1 border rounded-lg dark:bg-gray-800 dark:text-white"
                 />
                 <button
                   onClick={() => handleCommentSubmit(feed._id)}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                  className="px-2 py-1 text-xs md:text-base md:px-4 md:py-2 button-bg text-white rounded-lg "
                 >
                   Submit
                 </button>

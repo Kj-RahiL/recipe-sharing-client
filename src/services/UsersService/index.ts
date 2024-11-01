@@ -18,6 +18,7 @@ export const getSingleUser = async (id:string) => {
   return data;
 };
 export const followUser = async (followData: any) => {
+  console.log(followData)
   const { data } = await nexiosInstance.post(`/user/follow`, followData,  {
     next: { tags: ["Users"] },
   });

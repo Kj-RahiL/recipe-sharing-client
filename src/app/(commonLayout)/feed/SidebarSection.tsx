@@ -9,7 +9,7 @@ const SidebarSection = () => {
     <div
       className={`p-6 ${
         theme === "dark" ? "bg-gray-900 text-white" : "bg-white"
-      } sticky top-0`}
+      } sticky top-0 `}
     >
       <h2 className="font-bold text-lg mb-4">Recommended communities</h2>
       {[
