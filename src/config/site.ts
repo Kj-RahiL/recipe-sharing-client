@@ -36,8 +36,12 @@ export const siteConfig = {
       href: "/about",
     },
     {
-      label: "Found Items",
-      href: "/found-items",
+      label: "Contact",
+      href: "/contact",
+    },
+    {
+      label: "Profile",
+      href: "/profile",
     },
   ],
 };

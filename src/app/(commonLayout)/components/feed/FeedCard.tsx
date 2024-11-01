@@ -105,7 +105,7 @@ const FeedCard = ({ searchParams }: any) => {
                 </div>
               </div>
             </div>
-
+{/* like, comment & share component */}
            <ShareComponent feed={feed} user={userData?.data}/>
           </div>
         ))}

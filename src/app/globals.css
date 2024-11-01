@@ -43,4 +43,11 @@
     background: linear-gradient(to left, #3c72e2, #00c8c4, #2a226a);
 }
 
+.gradient-text {
+  background: linear-gradient(to right, #000000c2, #0244ca, #00c8c4 );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 

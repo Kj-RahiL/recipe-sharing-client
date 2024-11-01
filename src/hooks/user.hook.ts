@@ -43,7 +43,7 @@ export const useGetSingleUser = (id: string) => {
   });
 };
 export const useGetAllUser = () => {
-  return useQuery({
+  return useQuery<UserResponse>({
     queryKey: ["ALL_USER"],
     queryFn: async () => await getAllUsers()
   });

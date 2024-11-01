@@ -4,13 +4,8 @@
 import {
   Button,
   Input,
-  Modal,
-  ModalBody,
-  ModalContent,
   ModalFooter,
-  ModalHeader,
   Textarea,
-  useDisclosure,
 } from "@nextui-org/react";
 import { useState } from "react";
 import { Camera, User, Mail, Phone } from "lucide-react";
@@ -185,7 +180,7 @@ const UpdatedProfile = ({ onClose }: any) => {
           >
             Close
           </Button>
-          <Button color="primary" type="submit">
+          <Button className="btn button-bg" type="submit">
             Submit
           </Button>
         </ModalFooter>

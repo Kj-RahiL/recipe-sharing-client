@@ -159,7 +159,7 @@ const RecipeForm: React.FC = () => {
         <button
           type="button"
           onClick={() => addIngredient({ name: "", quantity: "", type: "" })}
-          className="btn"
+          className="button-bg btn"
         >
           Add Ingredient
         </button>
@@ -192,7 +192,7 @@ const RecipeForm: React.FC = () => {
         <button
           type="button"
           onClick={() => addStep({ description: "", duration: '' })}
-          className="btn"
+          className="button-bg btn"
         >
           Add Step
         </button>
@@ -231,7 +231,7 @@ const RecipeForm: React.FC = () => {
         </label>
       </div>
 
-      <button type="submit" className="btn btn-primary w-full">
+      <button type="submit" className="button-bg btn w-full">
         Create Recipe
       </button>
     </form>

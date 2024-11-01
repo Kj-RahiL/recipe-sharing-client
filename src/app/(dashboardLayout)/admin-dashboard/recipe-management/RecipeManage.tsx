@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import {
-  getAllRecipe,
   deleteRecipe,
   updateRecipe,
+  getManageRecipe,
 } from "@/services/RecipeService";
 import {
   Table,
@@ -16,6 +16,7 @@ import {
   Switch,
   Badge,
 } from "@nextui-org/react";
+import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -25,17 +26,19 @@ const columns = [
   { key: "author", label: "AUTHOR" },
   { key: "isPremium", label: "PREMIUM" },
   { key: "isPublished", label: "PUBLISHED" },
-  { key: "actions", label: "ACTIONS" },
+  { key: "delete", label: "DELETE" },
 ];
 
 const RecipeManage = () => {
   const [recipes, setRecipes] = useState<any[]>([]);
 
+  console.log(recipes)
+
   // Fetch all recipes on component mount
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const response = await getAllRecipe();
+        const response = await getManageRecipe();
         const newFeeds = (response as { data: any[] }).data;
         setRecipes(newFeeds);
         console.log(newFeeds);
@@ -102,19 +105,19 @@ const RecipeManage = () => {
                   onChange={() =>
                     handleTogglePublished(item._id, item.isPublished)
                   }
-                  color={item.isPublished ? "success" : "default"}
+                  color={item.isPublished ? "primary" : "default"}
                 />
               </div>
             </TableCell>
 
             <TableCell>
               <Button
-                color="danger"
+                className="bg-gradient-to-tr from-neutral-900 via-gray-800 to-pink-600 text-white"
                 size="sm"
                 onClick={() => handleDelete(item._id)}
                 style={{ marginLeft: 8 }}
               >
-                Delete
+                <Trash2/>
               </Button>
             </TableCell>
           </TableRow>

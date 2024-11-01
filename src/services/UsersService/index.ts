@@ -6,7 +6,7 @@ import { UserResponse } from "@/types";
 import { revalidateTag } from "next/cache";
 
 export const getAllUsers = async () => {
-  const { data } = await nexiosInstance.get(`/user`, {
+  const { data } = await nexiosInstance.get<UserResponse>(`/user`, {
     next: { tags: ["Users"] },
   });
   return data;

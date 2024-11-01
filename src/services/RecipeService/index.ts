@@ -13,22 +13,23 @@ export const createRecipe = async (recipeData:any) => {
   return data;
 };
 
-// export const getAllRecipe = async (queryParams: Record<string, any>) => {
-//   const queryString = new URLSearchParams(queryParams).toString();
-//   const { data } = await nexiosInstance.get(`/recipe?page=${queryString}`, {
-//     cache: "no-store",
-//   });
-//   console.log(data);
-//   return data;
-// };
-export const getAllRecipe = async (pageParam:number=1, searchTerm:string , sort :string ) => {
+export const getManageRecipe = async () => {
+  const { data } = await nexiosInstance.get(`/recipe`, {
+    cache: "no-store",
+  });
+  console.log(data);
+  return data;
+};
+export const getAllRecipe = async (pageParam:number=1, searchTerm:string , sort:string ) => {
   const {data} = await nexiosInstance.get(`/recipe`, {
     params: { searchTerm, sort, limit:10, page:pageParam},
     next: {
       tags: ['RECIPE']
     }
   });
+  console.log(data, 'recipee')
   return data
+
 };
 
 export const getRecipeById = async (id: string) => {

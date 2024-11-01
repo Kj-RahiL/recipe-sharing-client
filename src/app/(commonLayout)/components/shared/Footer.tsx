@@ -4,8 +4,8 @@ import { ArrowRight } from "lucide-react";
 
 const Footer = () => {
     return (
-        <footer className="w-full">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <footer className="w-full mx-auto container px-4 sm:px-6 lg:px-8 ">
+        <div className="">
            {/* grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 gap-y-8 md:gap-8 py-10 max-w-sm mx-auto sm:max-w-3xl lg:max-w-full">
                 <div className="col-span-full mb-10 lg:col-span-2 lg:mb-0">
@@ -54,7 +54,7 @@ const Footer = () => {
             </div>
 
             {/* <!--Grid--> */}
-            <div className="py-7 border-t border-gray-200">
+            <div className="py-7 border-t border-gray-400">
                 <div className="flex items-center justify-center flex-col lg:justify-between lg:flex-row">
                     <span className="text-sm text-gray-500 ">©<a href="/">Chef&apos;s Circle</a> 2024, All rights reserved.</span>
                     <div className="flex mt-4 space-x-4 sm:justify-center lg:mt-0 ">

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { changePassword } from "@/services/AuthService";
 import { Button, Input, ModalFooter } from "@nextui-org/react";
 import { Lock, LockKeyhole } from "lucide-react";
@@ -64,7 +65,7 @@ const ChangePassword = ({ onClose }: any) => {
           >
             Close
           </Button>
-          <Button color="primary" type="submit">
+          <Button className="btn button-bg" type="submit">
             Submit
           </Button>
         </ModalFooter>

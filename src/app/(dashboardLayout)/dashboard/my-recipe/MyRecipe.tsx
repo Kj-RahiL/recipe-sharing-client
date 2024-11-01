@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useUser } from "@/context/user.provider";
-import { deleteRecipe, getAllRecipe } from "@/services/RecipeService";
+import { deleteRecipe, getManageRecipe } from "@/services/RecipeService";
 import {
   Button,
   ModalHeader,
@@ -44,14 +45,14 @@ const columns = [
 ];
 
 const MyRecipe = () => {
-  const [recipes, setRecipes] = useState<Recipe[] | null>(null);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<TRecipe | null>(null);
   const { user } = useUser();
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 
   const fetchRecipes = async () => {
     try {
-      const res = await getAllRecipe(1);
+      const res = await getManageRecipe();
       const newFeeds = (res as { data: Recipe[] }).data;
       setRecipes(newFeeds);
     } catch (error) {
@@ -69,7 +70,7 @@ const MyRecipe = () => {
   const handleDelete = async (id: string) => {
     try {
       const res: any = await deleteRecipe(id); // Assume deleteRecipe handles the DELETE request
-      if (res!?.success) {
+      if (res.success) {
         setRecipes((prev) => prev!.filter((recipe) => recipe._id !== id));
         console.log(res);
         toast.success(res.message || "Delete Recipe successfully");
@@ -97,8 +98,8 @@ const MyRecipe = () => {
             <TableColumn key={column.key}>{column.label}</TableColumn>
           )}
         </TableHeader>
-        <TableBody>
-          {myRecipes!?.map((recipe: Recipe) => (
+        <TableBody items={recipes}>
+          {(recipe:Recipe) => (
             <TableRow key={recipe._id}>
               <TableCell>
                 <Image
@@ -113,24 +114,24 @@ const MyRecipe = () => {
               <TableCell>{recipe.isPremium ? "Premium" : "Normal"}</TableCell>
               <TableCell>{recipe.isPublished ? "Yes" : "No"}</TableCell>
               <TableCell>
-                <Button color="default" onClick={() => handleUpdate(recipe)} className="ml-2">
+                <Button  onClick={() => handleUpdate(recipe)} className="mr-2 btn button-bg">
                   <Edit></Edit>
                 </Button>
 
                 <Button
-                  color="danger"
+                  className="bg-gradient-to-tr from-neutral-900 via-gray-800 to-pink-600 text-white"
                   onClick={() => handleDelete(recipe._id!)}
                 >
                   <Delete />
                 </Button>
               </TableCell>
             </TableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
       {/* edit modal */}
       <CustomModal
-        size='md'
+        size='xl'
         scrollBehavior='outside'
         isOpen={isOpen}
         onOpenChange={onOpenChange}

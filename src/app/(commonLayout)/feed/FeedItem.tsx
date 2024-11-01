@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 const FeedItem = () => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOption, setSortOption] = useState("latest");
+  const [sortOption, setSortOption] = useState("");
   // const [page, setPage] = useState(1);
   // const [limit, setLimit] = useState(10);
 

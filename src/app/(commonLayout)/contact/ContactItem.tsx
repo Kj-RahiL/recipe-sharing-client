@@ -15,7 +15,7 @@ const ContactItems = () => {
     >
       <div className="py-10">
         {/* Heading */}
-        <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center dark:text-emerald-600">
+        <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center gradient-text">
           Contact Us
         </h2>
       </div>
@@ -23,12 +23,12 @@ const ContactItems = () => {
       {/* Contact Cards */}
       <div
         className={`${
-          theme === "dark" ? "bg-gray-800" : "bg-white"
-        } rounded-lg shadow-lg`}
+          theme === "dark" ? "bg-gray-900" : "bg-white"
+        } rounded-lg shadow`}
       >
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 justify-center py-20 mx-10 text-center">
           {/* Card 1: Office Address */}
-          <div className="card shadow-md rounded-lg p-8 shadow-[#003039]">
+          <div className="card shadow-md rounded-lg p-8 shadow-blue-800">
             <div className="card-body">
               <div className="flex items-center justify-center h-20 w-full mb-4">
                 <HouseIcon size={42} />
@@ -39,7 +39,7 @@ const ContactItems = () => {
           </div>
 
           {/* Card 2: Phone */}
-          <div className="card shadow-md rounded-lg p-8 shadow-[#003039]">
+          <div className="card shadow-md rounded-lg p-8 shadow-blue-800">
             <div className="card-body">
               <div className="flex items-center justify-center h-20 w-full mb-4">
                 <Phone size={42} />
@@ -50,7 +50,7 @@ const ContactItems = () => {
           </div>
 
           {/* Card 3: Email */}
-          <div className="card shadow-md rounded-lg p-8 shadow-[#003039]">
+          <div className="card shadow-md rounded-lg p-8  shadow-blue-800">
             <div className="card-body">
               <div className="flex items-center justify-center h-20 w-full mb-4">
                 <Mailbox size={42} />
@@ -63,7 +63,7 @@ const ContactItems = () => {
       </div>
 
       {/* Form Section */}
-      <h2 className="text-center text-4xl py-10 font-semibold bg-gradient-to-r from-[#04030e] via-gray-600 to-[#14387f] text-transparent bg-clip-text">
+      <h2 className="text-center text-4xl py-10 font-semibold gradient-text">
         Feel Free to Message Us
       </h2>
 

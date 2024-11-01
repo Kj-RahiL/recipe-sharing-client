@@ -53,7 +53,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ( {existingRecipe, onClose} ) => {
   } = useFieldArray({ control, name: "steps" });
 
   const onSubmit: SubmitHandler<RecipeFormData> = async (data) => {
-    const  { author, _id, ...updateData } = {
+    const  { ...updateData } = {
       ...data,
       category: Array.isArray(data.category)
         ? data.category
@@ -67,7 +67,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ( {existingRecipe, onClose} ) => {
 const create = { ...updateData, author: user?.id };
 
   
-    console.log( existingRecipe?._id , 'esss');
+    console.log(updateData, 'esss');
 
     try {
       let response;
@@ -208,7 +208,7 @@ const create = { ...updateData, author: user?.id };
         <button
           type="button"
           onClick={() => addIngredient({ name: "", quantity: "", type: "" })}
-          className="btn"
+          className="btn button-bg"
         >
           Add Ingredient
         </button>
@@ -244,7 +244,7 @@ const create = { ...updateData, author: user?.id };
         <button
           type="button"
           onClick={() => addStep({ description: "", duration: "" })}
-          className="btn"
+          className="btn button-bg"
         >
           Add Step
         </button>
@@ -282,7 +282,7 @@ const create = { ...updateData, author: user?.id };
           <span>Is Premium</span>
         </label>
       </div>
-      <button type="submit" className="btn btn-primary w-full">
+      <button type="submit" className="btn button-bg w-full">
         {existingRecipe ? "Update Recipe" : "Create Recipe"}
       </button>
     </form>

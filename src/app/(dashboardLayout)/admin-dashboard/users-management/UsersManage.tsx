@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import {
   Table,
@@ -33,7 +34,7 @@ const UserManage = () => {
   const handleStatusChange = async (id: string) => {
     const updateStatus = { status: "blocked" };
     try {
-     const res = await updateUserStatus(id, updateStatus);
+      await updateUserStatus(id, updateStatus);
       if (isSuccess) {
         toast.success("User status updated to 'blocked'.");
         refetch();
@@ -70,7 +71,7 @@ const UserManage = () => {
         <TableColumn>ACTIONS</TableColumn>
       </TableHeader>
       <TableBody>
-        {users?.data?.map((user: TUser) => (
+        {users?.data.map((user: TUser) => (
           <TableRow key={user._id}>
             <TableCell>{user.name}</TableCell>
             <TableCell>{user.email}</TableCell>
@@ -81,14 +82,15 @@ const UserManage = () => {
               <Button
                 color="danger"
                 onClick={() => handleDelete(user._id!)}
-                className="ml-2"
+                className="mr-2"
               >
                 Delete
               </Button>
               {user.status === "in-progress" ? (
                 <Button
-                  color="warning"
+                 className="bg-gradient-to-tr from-neutral-900 via-gray-800 to-pink-600 text-white"
                   onClick={() => handleStatusChange(user._id!)}
+                  
                 >
                   Block
                 </Button>
