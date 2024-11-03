@@ -1,10 +1,11 @@
-import { Spinner } from "@nextui-org/spinner";
+import NormalLoading from "./(commonLayout)/components/Loading/NormalLoading";
+
 
 
 const loading = () => {
     return  (
         <div className="flex justify-center items-center">
-            <Spinner label="Loading..." color="success" />
+            <NormalLoading/>
         </div>
     )
 }

@@ -78,7 +78,6 @@ const NavigationPage = () => {
 
       <NavbarContent justify="end">
         <NavbarItem>
-       
           <ThemeSwitcher />
         </NavbarItem>
         {user?.email ? (
@@ -87,7 +86,9 @@ const NavigationPage = () => {
           </NavbarItem>
         ) : (
           <NavbarItem className="hidden sm:flex gap-2">
-            <Button onClick={() => router.push("/login")} className="button-bg">Login</Button>
+            <Button onClick={() => router.push("/login")} className="button-bg">
+              Login
+            </Button>
           </NavbarItem>
         )}
       </NavbarContent>
@@ -126,9 +127,21 @@ const NavigationPage = () => {
             Dashboard
           </NextLink>
         </NavbarMenuItem>
-        <NavbarMenuItem key="logout" onClick={() => handleLogout()} className="text-pink-700">
-          LogOut
-        </NavbarMenuItem>
+        {user?.email ? (
+          <NavbarMenuItem
+            className="cursor-pointer "
+            key="logout"
+            onClick={() => handleLogout()}
+          >
+            Log Out
+          </NavbarMenuItem>
+        ) : (
+          <NavbarMenuItem className="hidden sm:flex gap-2">
+            <Button onClick={() => router.push("/login")} className="button-bg">
+              Login
+            </Button>
+          </NavbarMenuItem>
+        )}
       </NavbarMenu>
     </Navbar>
   );

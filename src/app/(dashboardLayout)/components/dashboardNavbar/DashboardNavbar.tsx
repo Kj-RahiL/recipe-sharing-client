@@ -18,7 +18,7 @@ const DashboardNavbar = ({ children }: { children: React.ReactNode }) => {
           wrapper: "w-full max-w-full",
         }}
       >
-        <NavbarContent className="md:hidden">
+        <NavbarContent className="md: hidden">
           {collapsed ? (
             <ChevronLeft onClick={setCollapsed}> </ChevronLeft>
           ) : (

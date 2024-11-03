@@ -9,6 +9,9 @@ import dynamic from "next/dynamic";
 import { useUserLogin } from "@/hooks/auth.hook";
 import { useUser } from "@/context/user.provider";
 import { useEffect } from "react";
+import CustomModal from "@/app/(dashboardLayout)/components/modal/CustomModal";
+import { ModalHeader, useDisclosure } from "@nextui-org/react";
+import ForgetPassword from "../components/Profile/ForgetPassword";
 
 // Load Lottie dynamically to avoid SSR issues
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
@@ -19,6 +22,7 @@ const LoginForm = () => {
   const router = useRouter();
   const { mutate: handleUserLogin, isPending, isSuccess } = useUserLogin();
   const { setIsLoading: userLoading } = useUser();
+  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,6 +35,13 @@ const LoginForm = () => {
 
     handleUserLogin(userInfo);
     userLoading(true);
+  };
+
+  const handleModalOpen = () => {
+    onOpen();
+  };
+  const handleModalClose = () => {
+    onClose()
   };
 
   useEffect(() => {
@@ -89,8 +100,8 @@ const LoginForm = () => {
               />
               <label className="label">
                 <a
-                  href="#"
-                  className="text-[#13ffaa] label-text-alt link link-hover"
+                  onClick={handleModalOpen}
+                  className="text-[#13ffaa] label-text-alt cursor-pointer"
                 >
                   Forgot password?
                 </a>
@@ -121,6 +132,20 @@ const LoginForm = () => {
             </div>
           </form>
         </div>
+          {/* edit modal */}
+      <CustomModal
+        size="md"
+        scrollBehavior="outside"
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      >
+        <ModalHeader className="flex flex-col gap-1">
+          Forget Password
+        </ModalHeader>
+        <ForgetPassword
+          onClose={handleModalClose}
+        />
+      </CustomModal>
       </div>
     </div>
   );

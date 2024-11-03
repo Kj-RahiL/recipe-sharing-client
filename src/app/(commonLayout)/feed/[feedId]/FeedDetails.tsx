@@ -12,6 +12,7 @@ import { useUser } from "@/context/user.provider";
 import { useGetRecipeById, useRecipe } from "@/hooks/recipe.hook";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import CardLoading from "../../components/Loading/CardLoading";
 
 const FeedDetails = () => {
   const { user } = useUser();
@@ -65,7 +66,7 @@ const FeedDetails = () => {
     }
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <CardLoading/>;
 
   return (
     <div className="p-8 max-w-3xl mx-auto bg-white rounded-lg shadow-lg dark:bg-gray-900">

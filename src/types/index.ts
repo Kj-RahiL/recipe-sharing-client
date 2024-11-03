@@ -122,3 +122,8 @@ export interface TUser {
     message: string;
     data: TUser;
   }
+  export interface forgetPasswordResponse {
+    success: boolean;
+    statusCode: number;
+    message: string;
+  }

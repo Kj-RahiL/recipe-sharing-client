@@ -8,6 +8,7 @@ import EllipsisDropDown from "./EllipsisDropDown";
 import Image from "next/image";
 import CustomModal from "@/app/(dashboardLayout)/components/modal/CustomModal";
 import UpdateRecipe from "@/app/(commonLayout)/components/feed/UpdateRecipe";
+import ProfileLoading from "../Loading/ProfileLoading";
 
 
 const ProfileCard = () => {
@@ -16,7 +17,7 @@ const ProfileCard = () => {
   const { data, isLoading, refetch } = useGetSingleUser(user?.id as string);
   const profileData = data?.data;
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <ProfileLoading/>;
   }
   const handleCreated = () => {
     onOpen();

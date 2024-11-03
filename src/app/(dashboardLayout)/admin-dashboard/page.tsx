@@ -1,7 +1,7 @@
-import AdminHome from "./components/AdminHome";
+import DashboardHome from "../components/HomeComponent/DashboardHome";
 
 const AdminDashboard = () => {
-  return <AdminHome />;
+  return <DashboardHome />;
 };
 
 export default AdminDashboard;

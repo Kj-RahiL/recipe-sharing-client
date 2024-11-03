@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 const NavbarDropDown = () => {
   const router = useRouter();
   const { user, setIsLoading } = useUser();
+  console.log(user)
   const handleLogout = () => {
     logout();
     setIsLoading(true);
@@ -52,7 +53,6 @@ const NavbarDropDown = () => {
         <DropdownItem key="settings" href="/profile">
           My Profile
         </DropdownItem>
-
         <DropdownItem
           key="logout"
           color="danger"

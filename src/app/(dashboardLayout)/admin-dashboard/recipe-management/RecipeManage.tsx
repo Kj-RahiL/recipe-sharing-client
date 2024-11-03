@@ -100,7 +100,7 @@ const RecipeManage = () => {
             <TableRow key={item._id}>
               <TableCell>{item.title}</TableCell>
               <TableCell>{item.category.join(", ")}</TableCell>
-              <TableCell>{`${item.author.name} (${item.author.email})`}</TableCell>
+              <TableCell>{`${item?.author?.name} (${item?.author?.email})`}</TableCell>
               <TableCell>{item.isPremium ? "Yes" : "No"}</TableCell>
               <TableCell>
                 <div className="flex items-center justify-between w-[150px]">
@@ -126,7 +126,7 @@ const RecipeManage = () => {
                 <Button
                   className="bg-gradient-to-tr from-neutral-900 via-gray-800 to-pink-600 text-white"
                   size="sm"
-                  onClick={() => handleDelete(item._id)}
+                  onClick={() => handleDelete(item?._id)}
                   style={{ marginLeft: 8 }}
                 >
                   <Trash2 />

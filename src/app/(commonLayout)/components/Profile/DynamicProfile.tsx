@@ -8,6 +8,7 @@ import { Button, Avatar, Tabs, Tab } from "@nextui-org/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import UserCreatedPost from "./UserCreatedPost";
+import ProfileLoading from "../Loading/ProfileLoading";
 
 const DynamicProfile = () => {
   const { user: logUser } = useUser();
@@ -39,7 +40,7 @@ const DynamicProfile = () => {
     }
   };
 
-  if (!user) return <div>Loading...</div>;
+  if (!user) return <ProfileLoading/>;
 
   return (
     <div className="p-6 max-w-lg mx-auto">
@@ -62,7 +63,7 @@ const DynamicProfile = () => {
         </div>
         {!currentUser && (
           <Button
-            className={`ml-auto ${isFollowing ? "bg-gradient-to-tr from-neutral-900 via-gray-800 to-pink-600 text-white" : "button-bg"}`}
+            className={`ml-auto px-2 py-1 md:px-4 md:py-2 text-sm md:text-base ${isFollowing ? "bg-gradient-to-tr from-neutral-900 via-gray-800 to-pink-600 text-white" : "button-bg"}`}
             onClick={handleFollowToggle}
           >
             {isFollowing ? "Unfollow" : "Follow"}

@@ -10,14 +10,16 @@ import { TRecipe } from "@/types";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useGetSingleUser } from "@/hooks/user.hook";
 import ShareComponent from "./ShareComponent";
+import CardLoading from "../Loading/CardLoading";
+import { useEffect, useState } from "react";
 
 const FeedCard = ({ searchParams }: any) => {
   const { searchTerm, sortOption } = searchParams;
-  console.log(searchParams, 'fee')
+  console.log(searchParams, "fee");
   const { user } = useUser();
   const { data: userData } = useGetSingleUser(user?.id as string);
-
   const router = useRouter();
+  const [hydrated, setHydrated] = useState(false);
 
   // Fetch all recipes using the hook
   const { data, fetchNextPage, hasNextPage, isLoading, isError } =
@@ -25,11 +27,16 @@ const FeedCard = ({ searchParams }: any) => {
   const recipes = data?.pages.flatMap((page: any) => page.data) || [];
   console.log(recipes);
 
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  if (!hydrated) return null;
+  if (isLoading) return <CardLoading />;
+  if (isError) return <p>Failed to load recipes.</p>;
+
   const handleFeedClick = (id: string) => router.push(`/feed/${id}`);
   const handleUserClick = (id: string) => router.push(`/user/${id}`);
-
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Failed to load recipes.</p>;
 
   return (
     <InfiniteScroll
@@ -42,7 +49,7 @@ const FeedCard = ({ searchParams }: any) => {
         {recipes?.map((feed: TRecipe) => (
           <div
             key={feed?._id}
-            className="p-4 mb-10 rounded-lg shadow-md cursor-pointer dark:bg-gray-900 dark:text-white light:bg-white"
+            className="p-4 mb-10 rounded-lg shadow-md shadow-blue-800 cursor-pointer dark:bg-gray-900 dark:text-white light:bg-white"
           >
             <div
               className="flex items-center mb-4"
@@ -86,7 +93,9 @@ const FeedCard = ({ searchParams }: any) => {
                     />
                   </svg>
                 </span>
-                <p className="absolute top-10 right-3 bg-green-500 text-white text-xs px-3 py-2 rounded-full flex items-center space-x-1">{feed?.cookingTime} min</p>
+                <p className="absolute top-10 right-3 bg-green-500 text-white text-xs px-3 py-2 rounded-full flex items-center space-x-1">
+                  {feed?.cookingTime} min
+                </p>
                 <Image
                   src={feed?.image}
                   alt={feed?.title}

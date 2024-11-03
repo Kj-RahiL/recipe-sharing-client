@@ -13,6 +13,7 @@ import { deleteUser, updateUserStatus } from "@/services/UsersService";
 import { useGetAllUser } from "@/hooks/user.hook";
 import { toast } from "sonner";
 import { TUser } from "@/types";
+import NormalLoading from "@/app/(commonLayout)/components/Loading/NormalLoading";
 
 const UserManage = () => {
   const { data: users, isLoading, error, isSuccess, refetch } = useGetAllUser();
@@ -58,7 +59,7 @@ const UserManage = () => {
     }
   };
 
-  if (isLoading) return <p>Loading users...</p>;
+  if (isLoading) return <NormalLoading/>;
   if (error) return <p>Error fetching users: {error.message}</p>;
 
   return (
@@ -83,7 +84,7 @@ const UserManage = () => {
               <Button
                 color="danger"
                 onClick={() => handleDelete(user._id!)}
-                className="mr-2"
+                className="mr-2 bg-gradient-to-tr from-neutral-900  to-pink-600"
               >
                 Delete
               </Button>
@@ -99,6 +100,7 @@ const UserManage = () => {
                 <Button
                   color="success"
                   onClick={() => handleBlockChange(user._id!)}
+                  className="bg-gradient-to-tr from-neutral-900 via-gray-800 to-green-600 text-white"
                 >
                   UnBlock
                 </Button>

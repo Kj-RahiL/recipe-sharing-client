@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import nexiosInstance from "@/config/nexios.config";
-import { LoginResponse, RegisterResponse, SingleUserResponse } from "@/types";
+import {
+  forgetPasswordResponse,
+  LoginResponse,
+  RegisterResponse,
+  SingleUserResponse,
+} from "@/types";
 import { jwtDecode } from "jwt-decode";
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
@@ -11,7 +16,7 @@ export const registerUser = async (userData: any) => {
     "/auth/register",
     userData
   );
-  revalidateTag('Users')
+  revalidateTag("Users");
   if (!data.success) {
     throw new Error(data.message || "Registration failed");
   }
@@ -26,15 +31,12 @@ export const loginUser = async (userData: any) => {
       next: { tags: ["Login"] },
     }
   );
-  revalidateTag('Users')
-  if (!data?.success) {
-    throw new Error(data?.message || "LOgin failed");
-  }
+  revalidateTag("Users");
   if (data?.success) {
     cookies().set("accessToken", data.token!);
     revalidateTag("Login");
-    return data;
   }
+  return data;
 };
 
 export const getCurrentUser = async () => {
@@ -55,7 +57,7 @@ export const getCurrentUser = async () => {
     followers: decodedToken?.followers,
     following: decodedToken?.following,
     status: decodedToken?.status,
-    isPaid: decodedToken?.isPaid
+    isPaid: decodedToken?.isPaid,
   };
 };
 
@@ -83,31 +85,57 @@ export const getNewAccessToken = async (): Promise<LoginResponse> => {
   return res.data; // Now this should be recognized as LoginResponse
 };
 
-export const changePassword = async(newFormData: any) => {
-
+export const changePassword = async (newFormData: any) => {
   const token = cookies().get("accessToken")?.value;
-  console.log("tok", newFormData)
-  const {data} = await nexiosInstance.post<SingleUserResponse>("/auth/change-password", newFormData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json", // Optional: Specify content type
-    },
-  });
+  // console.log("tok", newFormData);
+  const { data } = await nexiosInstance.post<SingleUserResponse>(
+    "/auth/change-password",
+    newFormData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", // Optional: Specify content type
+      },
+    }
+  );
   revalidateTag("Users");
 
-  console.log(data)
+  // console.log(data);
   // if (!data.success) {
   //   throw new Error(data.message || "Change Password failed");
   // }
   return data;
+};
+export const forgetPassword = async (email: string) => {
+  console.log("email", email);
+  const { data } = await nexiosInstance.post<forgetPasswordResponse>(
+    "/auth/forget-password",
+    { email }
+  );
+  revalidateTag("Users");
+  return data;
+};
 
+export const resetPassword = async (
+  token: string,
+  email: string,
+  newPassword: string
+) => {
+  const { data } = await nexiosInstance.post<forgetPasswordResponse>(
+    "/auth/reset-password",
+    { email, newPassword },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", // Optional: Specify content type
+      },
+    }
+  );
+  revalidateTag("Users");
+  return data
 };
 
 export const logout = () => {
   cookies().delete("accessToken");
   cookies().delete("refreshToken");
 };
-
-
-
-

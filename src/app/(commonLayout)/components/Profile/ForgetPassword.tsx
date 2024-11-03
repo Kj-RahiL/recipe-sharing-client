@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { changePassword } from "@/services/AuthService";
+import {  forgetPassword } from "@/services/AuthService";
 import { Button, Input, ModalFooter } from "@nextui-org/react";
-import { Lock, LockKeyhole } from "lucide-react";
+import { Mail } from "lucide-react";
 import { toast } from "sonner";
 
-const ChangePassword = ({ onClose }: any) => {
-  const handleChangePassword = async (e: React.FormEvent<HTMLFormElement>) => {
+const ForgetPassword = ({ onClose }: any) => {
+  const handleForgetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const oldPassword = formData.get("currentPassword") as string;
-    const newPassword = formData.get("newPassword") as string;
-    const newFormData = { oldPassword, newPassword };
+    const email = formData.get("email") as string;
+    console.log(email, 'forrr')
     try {
-      const res = await changePassword(newFormData);
+      const res = await forgetPassword(email);
       console.log(res)
       if (res?.success) {
         toast.success(res.message);
@@ -27,23 +26,23 @@ const ChangePassword = ({ onClose }: any) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <form className="space-y-4" onSubmit={handleChangePassword}>
+      <form className="space-y-4" onSubmit={handleForgetPassword}>
         {/* Current Password Input */}
         <div className="relative">
-          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
           <Input
-            type="password"
+            type="email"
             variant="underlined"
-            label="Current Password"
-            name="currentPassword"
-            placeholder="Enter current password"
+            label="Email"
+            name="email"
+            placeholder="Enter Register Email"
             className="pl-10"
             required
           />
         </div>
 
-        {/* New Password Input */}
-        <div className="relative">
+        
+        {/* <div className="relative">
           <LockKeyhole className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
           <Input
             type="password"
@@ -54,7 +53,7 @@ const ChangePassword = ({ onClose }: any) => {
             className="pl-10"
             required
           />
-        </div>
+        </div> */}
 
         <ModalFooter>
           <Button
@@ -74,4 +73,4 @@ const ChangePassword = ({ onClose }: any) => {
   );
 };
 
-export default ChangePassword;
+export default ForgetPassword;

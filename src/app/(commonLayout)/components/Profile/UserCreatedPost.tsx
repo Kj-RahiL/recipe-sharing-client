@@ -59,7 +59,7 @@ const UserCreatedPost = ({ userId }: UserCreatedPostProps) => {
 
           <div>
             <h2 className="text-base font-medium">{recipe?.title}</h2>
-            <p className="text-sm text-gray-700 dark:text-gray-400 ">{recipe?.description}</p>
+            <p className="text-sm text-gray-700 dark:text-gray-400 break-words whitespace-normal">{recipe?.description}</p>
           </div>
 
           <div className="relative">
