@@ -27,7 +27,7 @@
 
 ### Frontend
 - **Framework**: Next.js
-- **State Management**: Redux
+- **State Management**: TanstackQuery and Nexios(axios)
 - **Language**: TypeScript
 
 ### Backend
@@ -37,8 +37,8 @@
 - **ODM**: Mongoose
 
 ### Deployment
-- **Frontend**: Vercel / Netlify
-- **Backend**: Hosted on Vercel / Netlify
+- **Frontend**: Vercel 
+- **Backend**: Hosted on Vercel
 
 ## ⚙️ Setup & Installation
 
@@ -136,6 +136,6 @@ This project is licensed under the **MIT License**.
 
 ## 📬 Contact
 
-For questions or support, please reach out through the [Contact Us](#) page on the website or email us at **support@example.com**.
+For questions or support, please reach out through the [Contact Us](#) page on the website or email us at **rahiilarham@gmail.com**.
 
 Happy Cooking! 🥘
