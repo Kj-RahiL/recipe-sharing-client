@@ -1,17 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { loginUser, logout, registerUser } from "@/services/AuthService";
+import { logout, registerUser } from "@/services/AuthService";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import bgLogin from "../../../../public/assets/recipe2.jpg"
-
-;
+import bgLogin from "../../../../public/assets/recipe2.jpg";
 import Link from "next/link";
-import { revalidateTag } from "next/cache";
+import { useUserLogin } from "@/hooks/auth.hook";
+import { useUser } from "@/context/user.provider";
+import NormalLoading from "../components/Loading/NormalLoading";
+import { useRouter } from "next/navigation";
 const image_hosting_key = process.env.NEXT_PUBLIC_IMAGE_HOSTING_API;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
 const RegisterFrom = () => {
+  const router = useRouter()
+  const { mutate: handleUserLogin, isPending } = useUserLogin();
+  const { setIsLoading: userLoading } = useUser();
+
   const {
     register,
     formState: { errors },
@@ -22,7 +27,7 @@ const RegisterFrom = () => {
     const formData = new FormData();
     formData.append("image", data.image[0]);
     const toastId = toast.loading("Signing up...");
-    await logout()
+    await logout();
     try {
       const response = await fetch(image_hosting_api, {
         method: "POST",
@@ -43,28 +48,26 @@ const RegisterFrom = () => {
           phone: data.phone,
         };
         const response = await registerUser(userData);
-        console.log(response)
+        console.log(response);
         if (!response?.success) {
-          throw new Error(response?.message || "Registration failed")
+          throw new Error(response?.message || "Registration failed");
         }
-        revalidateTag("Register")
         toast.success(response?.message, {
           id: toastId,
           duration: 4000,
           style: { color: "green" },
         });
 
-        // router.push("/");
-
         // login
         const userInfo = {
           email: data.email,
           password: data.password,
         };
-        await loginUser(userInfo)
+        handleUserLogin(userInfo);
+        userLoading(true);
+        router.push('/feed')
       }
     } catch (err: any) {
-      console.log("hi", { err });
       toast.error(`Error: ${err.message || "Sign-up failed"}`, {
         id: toastId,
         duration: 4000,
@@ -72,6 +75,10 @@ const RegisterFrom = () => {
       });
     }
   };
+  
+  if(isPending){
+    return <NormalLoading/>
+  }
 
   return (
     <div

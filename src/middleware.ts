@@ -47,6 +47,12 @@ export async function middleware(request: NextRequest) {
   if (pathname === "/feed") {
     return NextResponse.next(); 
   }
+  if (pathname === "/feed/:id") {
+    return NextResponse.next(); 
+  }
+  if (pathname === "/profile") {
+    return NextResponse.next(); 
+  }
   return NextResponse.redirect(new URL("/", request.url));
 }
 
@@ -55,6 +61,8 @@ export const config = {
     "/login",
     "/register",
     "/feed",
+    "/feed/:id",
+    "/profile",
     "/dashboard/:page*",
     "/admin-dashboard/:page*",
   ],

@@ -2,7 +2,6 @@
 "use client";
 
 import Link from "next/link";
-import bgLogin from "../../../../public/assets/recipe2.jpg";
 import loginAni from "../../../../public/animation/Animation - 1701011933091.json";
 import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -41,7 +40,19 @@ const LoginForm = () => {
     onOpen();
   };
   const handleModalClose = () => {
-    onClose()
+    onClose();
+  };
+
+  const handleCredentialFill = (role: "user" | "admin") => {
+    const emailInput = document.querySelector<HTMLInputElement>("input[name='email']");
+    const passwordInput = document.querySelector<HTMLInputElement>("input[name='password']");
+    if (role === "user") {
+      if (emailInput) emailInput.value = "ajib@dunia.com";
+      if (passwordInput) passwordInput.value = "123456";
+    } else if (role === "admin") {
+      if (emailInput) emailInput.value = "rahiilarham@gmail.com";
+      if (passwordInput) passwordInput.value = "123456";
+    }
   };
 
   useEffect(() => {
@@ -55,84 +66,96 @@ const LoginForm = () => {
   }, [isPending, isSuccess]);
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center"
-      style={{ backgroundImage: `url(${bgLogin.src})` }}
-    >
-      <div className="flex flex-col lg:flex-row items-center justify-center w-full max-w-5xl p-8 backdrop-blur-md">
-        {/* Lottie animation section */}
-        <div className="w-full lg:w-1/2 hidden lg:block">
-          <Lottie animationData={loginAni} className="w-full" />
-        </div>
+    <div className="flex flex-col lg:flex-row items-center justify-center w-full max-w-5xl p-8 backdrop-blur-md">
+      {/* Lottie animation section */}
+      <div className="w-full lg:w-1/2 hidden lg:block">
+        <Lottie animationData={loginAni} className="w-full" />
+      </div>
 
-        {/* Form section */}
-        <div className="w-full lg:w-2/3 p-8 rounded border border-gray-500/30 shadow">
-          <form onSubmit={handleLogin} className="space-y-4">
-            <h1 className="text-3xl font-bold text-white mb-4 text-center">
-              Login now!
-            </h1>
+      {/* Form section */}
+      <div className="w-full lg:w-2/3 p-8 rounded border border-gray-500/30 shadow">
+        <form onSubmit={handleLogin} className="space-y-4">
+          <h1 className="text-3xl font-bold text-white mb-4 text-center">
+            Login now!
+          </h1>
+          {/* Pre-filled Credential Buttons */}
+          <div className="flex justify-center gap-4">
+            <button
+              type="button"
+              onClick={() => handleCredentialFill("user")}
+              className="border border-[#13ffaa] text-[#13ffaa] px-4 py-2 rounded font-medium hover:bg-[#01482d] hover:text-white hover:border-0 "
+            >
+              User Credential
+            </button>
+            <button
+              type="button"
+              onClick={() => handleCredentialFill("admin")}
+              className="border border-[#13ffaa] text-[#13ffaa] px-4 py-2 rounded font-medium hover:bg-[#01482d] hover:text-white hover:border-none"
+            >
+              Admin Credential
+            </button>
+          </div>
+          {/* Email Field */}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text text-white">Email</span>
+            </label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#13ffaa]"
+              required
+            />
+          </div>
 
-            {/* Email Field */}
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text text-white">Email</span>
-              </label>
-              <input
-                type="email"
-                name="email"
-                placeholder="Enter your email"
-                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#13ffaa]"
-                required
-              />
-            </div>
+          {/* Password Field */}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text text-white">Password</span>
+            </label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#13ffaa]"
+              required
+            />
+            <label className="label">
+              <a
+                onClick={handleModalOpen}
+                className="text-[#13ffaa] label-text-alt cursor-pointer"
+              >
+                Forgot password?
+              </a>
+            </label>
+          </div>
 
-            {/* Password Field */}
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text text-white">Password</span>
-              </label>
-              <input
-                type="password"
-                name="password"
-                placeholder="Enter your password"
-                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#13ffaa]"
-                required
-              />
-              <label className="label">
-                <a
-                  onClick={handleModalOpen}
-                  className="text-[#13ffaa] label-text-alt cursor-pointer"
-                >
-                  Forgot password?
-                </a>
-              </label>
-            </div>
+          {/* Submit Button */}
+          <div className="form-control mt-6">
+            <button className="button text-white w-full" type="submit">
+              {isPending ? "Logging in..." : "Login"}
+            </button>
+          </div>
 
-            {/* Submit Button */}
-            <div className="form-control mt-6">
-              <button className="button text-white w-full" type="submit">
-                {isPending ? "Logging in..." : "Login"}
-              </button>
-            </div>
+          {/* Signup Link */}
+          <div className="text-center mt-4">
+            <p className="text-gray-200">
+              New here?{" "}
+              <Link href="/register" className="text-[#13ffaa] font-semibold">
+                Create a new account
+              </Link>
+            </p>
+          </div>
 
-            {/* Signup Link */}
-            <div className="text-center mt-4">
-              <p className="text-gray-200">
-                New here?{" "}
-                <Link href="/register" className="text-[#13ffaa] font-semibold">
-                  Create a new account
-                </Link>
-              </p>
-            </div>
-
-            {/* Divider and Social Login */}
-            <div className="text-center mt-6">
-              <div className="divider text-gray-200">OR</div>
-              <p className="text-gray-200">Social login options will go here</p>
-            </div>
-          </form>
-        </div>
-          {/* edit modal */}
+          {/* Divider and Social Login */}
+          <div className="text-center mt-6">
+            <div className="divider text-gray-200">OR</div>
+            <p className="text-gray-200">Social login options will go here</p>
+          </div>
+        </form>
+      </div>
+      {/* edit modal */}
       <CustomModal
         size="md"
         scrollBehavior="outside"
@@ -142,11 +165,8 @@ const LoginForm = () => {
         <ModalHeader className="flex flex-col gap-1">
           Forget Password
         </ModalHeader>
-        <ForgetPassword
-          onClose={handleModalClose}
-        />
+        <ForgetPassword onClose={handleModalClose} />
       </CustomModal>
-      </div>
     </div>
   );
 };

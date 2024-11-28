@@ -136,7 +136,7 @@ const NavigationPage = () => {
             Log Out
           </NavbarMenuItem>
         ) : (
-          <NavbarMenuItem className="hidden sm:flex gap-2">
+          <NavbarMenuItem className="sm:flex gap-2">
             <Button onClick={() => router.push("/login")} className="button-bg">
               Login
             </Button>

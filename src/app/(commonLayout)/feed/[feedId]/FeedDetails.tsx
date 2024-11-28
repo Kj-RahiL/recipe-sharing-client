@@ -2,28 +2,34 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import StarRatings from "react-star-ratings";
 import { Textarea, Button, Avatar } from "@nextui-org/react"; // For comment input
-import { Ellipsis, Share2, Star, ThumbsDown, ThumbsUp } from "lucide-react";
+import { Share2, Star, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useUser } from "@/context/user.provider";
 import { useGetRecipeById, useRecipe } from "@/hooks/recipe.hook";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import CardLoading from "../../components/Loading/CardLoading";
+import EditDeleteDD from "./EditDeleteDD";
 
 const FeedDetails = () => {
   const { user } = useUser();
   const { feedId } = useParams();
-  const { data, isLoading } = useGetRecipeById(feedId as string);
+  const { data, isLoading, refetch } = useGetRecipeById(feedId as string);
   const { upvoteMutation, downvoteMutation, commentMutation, rateMutation } =
     useRecipe();
   const [comment, setComment] = useState<string>(""); // Comment input state
   const [rating, setRating] = useState<number>(0); // Rating state
   const recipe = data?.data;
   const recipeId = feedId as string;
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true); // Will run only on the client side
+  }, []);
 
   // avg rating
   const avgRating = recipe?.rating?.length
@@ -65,13 +71,14 @@ const FeedDetails = () => {
       alert("Share feature not supported in this browser.");
     }
   };
-
-  if (isLoading) return <CardLoading/>;
+  if (!isClient) {
+    return null; // Don't render the component on the server
+  }
+  if (isLoading) return <CardLoading />;
 
   return (
     <div className="p-8 max-w-3xl mx-auto bg-white rounded-lg shadow-lg dark:bg-gray-900">
-     
-      {recipe.author && (
+      {recipe?.author && (
         <div className="flex items-center mb-6 ">
           <Image
             src={recipe.author.image}
@@ -93,7 +100,7 @@ const FeedDetails = () => {
         height={400}
         className="rounded-lg mb-6 h-96"
       />
-       <h1 className="text-3xl font-bold mb-4">{recipe.title}</h1>
+      <h1 className="text-3xl font-bold mb-4">{recipe.title}</h1>
       <p className="text-lg mb-4">{recipe.description}</p>
       <div className="flex justify-between">
         <div>
@@ -110,9 +117,9 @@ const FeedDetails = () => {
 
         {/* Rating Component */}
         <div className="flex flex-col items-center">
-          
           <p className="text-lg font-semibold mb-2 flex items-center gap-1">
-            Avg Rate: <span className="text-[#999400]">{avgRating} </span><Star fill="#999400" color="#999400"/>
+            Avg Rate: <span className="text-[#999400]">{avgRating} </span>
+            <Star fill="#999400" color="#999400" />
           </p>
           <p className="text-lg font-semibold mb-2">Rate this recipe</p>
           <StarRatings
@@ -207,10 +214,20 @@ const FeedDetails = () => {
                           addSuffix: true,
                         })}
                       </p>
-                      <Ellipsis />
+                      {cmt?.user?.email === user?.email ? (
+                        <EditDeleteDD
+                          refetch={refetch}
+                          commentId={cmt._id}
+                          comment={cmt.comment}
+                        />
+                      ) : (
+                        ""
+                      )}
                     </div>
                   </div>
-                  <p className="text-gray-800 dark:text-gray-300 text-base mt-2">{cmt.comment}</p>
+                  <p className="text-gray-800 dark:text-gray-300 text-base mt-2">
+                    {cmt.comment}
+                  </p>
                   <div className="flex space-x-6 mt-2 text-sm text-gray-500">
                     <button className="hover:underline">Like</button>
                     <button className="hover:underline">Reply</button>
@@ -229,10 +246,7 @@ const FeedDetails = () => {
             placeholder="Add a comment..."
             fullWidth
           />
-          <Button
-            onClick={handleCommentSubmit}
-            className="mt-2 button-bg"
-          >
+          <Button onClick={handleCommentSubmit} className="mt-2 button-bg">
             Submit
           </Button>
         </div>

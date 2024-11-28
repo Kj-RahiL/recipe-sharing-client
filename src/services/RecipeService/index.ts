@@ -124,6 +124,40 @@ export const commentOnRecipe = async (recipeId: string, comment: string) => {
     throw error;
   }
 };
+export const UpdateComment = async (recipeId: string, commentId: string, comment: string) => {
+  const token = cookies().get("accessToken")?.value;
+  try {
+    const {data} = await nexiosInstance.put<UPdateRecipeResponse>(`/recipe/comment/${recipeId}/${commentId}`, {  comment }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", 
+      }
+    });
+    console.log(data)
+    revalidateTag("RECIPE")
+    return data
+  } catch (error) {
+    console.error(`Failed to comment recipe with ID: ${recipeId}`, error);
+    throw error;
+  }
+};
+export const DeleteComment = async (recipeId: string, commentId: string) => {
+  const token = cookies().get("accessToken")?.value;
+  try {
+    const {data} = await nexiosInstance.delete<UPdateRecipeResponse>(`/recipe/comment/${recipeId}/${commentId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", 
+      }
+    });
+    console.log(data)
+    revalidateTag("RECIPE")
+    return data
+  } catch (error) {
+    console.error(`Failed to comment recipe with ID: ${recipeId}`, error);
+    throw error;
+  }
+};
 export const rateRecipe = async (recipeId:string, rating: number) => {
   const token = cookies().get("accessToken")?.value;
   try {

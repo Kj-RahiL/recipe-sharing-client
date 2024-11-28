@@ -49,7 +49,7 @@ const FeedCard = ({ searchParams }: any) => {
         {recipes?.map((feed: TRecipe) => (
           <div
             key={feed?._id}
-            className="p-4 mb-10 rounded-lg shadow-md shadow-blue-800 cursor-pointer dark:bg-gray-900 dark:text-white light:bg-white"
+            className="p-4 mx-1 mb-10 rounded-lg shadow-md shadow-blue-800 cursor-pointer dark:bg-gray-900 dark:text-white light:bg-white"
           >
             <div
               className="flex items-center mb-4"

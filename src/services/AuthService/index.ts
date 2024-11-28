@@ -17,6 +17,7 @@ export const registerUser = async (userData: any) => {
     userData
   );
   revalidateTag("Users");
+  console.log(data)
   if (!data.success) {
     throw new Error(data.message || "Registration failed");
   }
@@ -28,7 +29,7 @@ export const loginUser = async (userData: any) => {
     "/auth/login",
     userData,
     {
-      next: { tags: ["Login"] },
+      next: { tags: ["Users"] },
     }
   );
   revalidateTag("Users");

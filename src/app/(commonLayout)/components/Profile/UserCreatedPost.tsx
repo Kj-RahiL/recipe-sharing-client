@@ -43,13 +43,13 @@ const UserCreatedPost = ({ userId }: UserCreatedPostProps) => {
         <div key={recipe._id} className="p-4  rounded-lg shadow-md space-y-2 mb-10">
           <div className="flex items-center">
             <Avatar
-              src={recipe.author.image}
-              alt={recipe.author.name}
+              src={recipe.author?.image}
+              alt={recipe.author?.name}
               size="sm"
               className="rounded-full"
             />
             <div className="ml-3">
-              <p className="font-bold text-sm">{recipe.author.name}</p>
+              <p className="font-bold text-sm">{recipe.author?.name}</p>
               <p className="text-gray-500 text-xs">10h</p>
             </div>
             <button className="ml-auto">
