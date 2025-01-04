@@ -130,8 +130,9 @@ const LoginForm = () => {
               </a>
             </label>
           </div>
+          
 
-          {/* Submit Button */}
+          {/* Submit Button  */}
           <div className="form-control mt-6">
             <button className="button text-white w-full" type="submit">
               {isPending ? "Logging in..." : "Login"}

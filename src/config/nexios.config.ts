@@ -4,8 +4,8 @@ import { cookies } from "next/headers";
 
 
 const nexiosInstance = new Nexios({
-   baseURL: " http://localhost:5000/api",
-  // baseURL: "https://recipe-sharing-server-olive.vercel.app/api", 
+  //  baseURL: " http://localhost:5000/api",
+  baseURL: "https://recipe-sharing-server-olive.vercel.app/api", 
   timeout: 10000,
   headers: {
     "Content-type": "application/json",

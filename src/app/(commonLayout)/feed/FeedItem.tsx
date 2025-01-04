@@ -59,19 +59,35 @@ const FeedItem = () => {
       </div>
       <div className="grid grid-cols-4">
         <div className="col-span-1 hidden md:block">
-        <div className="p-4 bg-gray-100 dark:bg-black">
-              <select
-                value={sortOption}
-                onChange={handleSortChange}
-                className="border p-2 rounded-md ml-4 "
-              >
-                <option value="latest">Latest</option>
-                <option value="rating">Top Rated</option>
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-              </select>
-            </div>
+          {/* sort */}
+          <div className="p-4 bg-gray-100 dark:bg-black">
+            <select
+              value={sortOption}
+              onChange={handleSortChange}
+              className="border p-2 rounded-md ml-4 "
+            >
+              <option value="latest">Latest</option>
+              <option value="rating">Top Rated</option>
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+          
+          {/* filter */}
+          <div className="p-4 bg-gray-100 dark:bg-black">
+            <select
+              value={sortOption}
+              onChange={handleSortChange}
+              className="border p-2 rounded-md ml-4 "
+            >
+              <option value="latest">Latest</option>
+              <option value="rating">Top Rated</option>
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
         </div>
         <div className="col-span-2 w-full px-2 md:px-4 overflow-y-auto max-h-screen bg-gray-100 dark:bg-black">
           {/* Feed Section */}
@@ -81,7 +97,6 @@ const FeedItem = () => {
         {/* Sticky Sidebar Section */}
         <div className="col-span-1 hidden md:block">
           <div className="sticky top-0 ">
-           
             <SidebarSection />
           </div>
         </div>
