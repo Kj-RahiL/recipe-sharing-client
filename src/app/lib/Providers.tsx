@@ -4,6 +4,7 @@ import { NextUIProvider } from "@nextui-org/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import UserProvider from "@/context/user.provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ChatProvider } from "@/context/chat.contex";
 
 const queryClient = new QueryClient();
 
@@ -14,7 +15,7 @@ function Providers({ children }: { children: React.ReactNode }) {
     <NextUIProvider>
       <NextThemesProvider attribute="class" defaultTheme="dark">
       <UserProvider>
-           {children}
+         <ChatProvider>  {children}</ChatProvider>
         </UserProvider>
       </NextThemesProvider>
     </NextUIProvider>
