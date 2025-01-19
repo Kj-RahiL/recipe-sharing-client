@@ -12,9 +12,7 @@ export const getAllUsers = async () => {
   return data;
 };
 export const getSingleUser = async (id:string) => {
-  const { data } = await nexiosInstance.get<SingleUserResponse>(`/user/${id}`, {
-    next: { tags: ["Users"] },
-  });
+  const { data } = await nexiosInstance.get<SingleUserResponse>(`/user/${id}`,);
   return data;
 };
 export const followUser = async (followData: any) => {

@@ -1,19 +1,12 @@
-import ChatBody from "../components/ChatBody";
-import ChatFooter from "../components/ChatFooter";
-import ChatHeader from "../components/ChatHeader";
-import Sidebar from "../components/Sidebar";
+import React from 'react';
+import ChatPage from '../components/ChatPage';
 
-const ChatPage= () => {
-    return (
-      <div className="flex h-screen">
-        <Sidebar />
-        <div className="flex-1 flex flex-col">
-          <ChatHeader />
-          <ChatBody />
-          <ChatFooter />
-        </div>
-      </div>
-    );
-  };
-  
-  export default ChatPage;
+const MessageLayout = () => {
+  return (
+    <div>
+      <ChatPage/>
+    </div>
+  );
+};
+
+export default MessageLayout;

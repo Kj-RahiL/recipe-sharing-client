@@ -120,10 +120,32 @@ export interface TUser {
     success: boolean;
     statusCode: number;
     message: string;
-    data: TUser;
+    data: any;
   }
   export interface forgetPasswordResponse {
     success: boolean;
     statusCode: number;
     message: string;
   }
+
+  export type chatUser ={
+    _id:string
+    name:string
+    email:string
+    phone:string
+    image:string
+  }
+
+  export interface ChatMessage {
+    _id: string;
+    senderId: string;
+    receiverId: string;
+    content: string;
+    createdAt: string;
+    isRead: boolean;
+  }
+  
+  export interface LoadMessageSuccessPayload {
+    msg: ChatMessage[];
+  }
+  

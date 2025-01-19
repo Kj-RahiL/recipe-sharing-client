@@ -47,5 +47,9 @@ export const siteConfig = {
       label: "Profile",
       href: "/profile",
     },
+    {
+      label: "Message",
+      href: "/message",
+    },
   ],
 };

@@ -25,7 +25,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const socket = useRef<Socket | null>(null);
 
   useEffect(() => {
-    socket.current = io('http://localhost:5000'); // Replace with your backend URL
+    socket.current = io('https://recipe-sharing-server-olive.vercel.app'); // Replace with your backend URL
 
     socket.current.on('connect', () => {
       console.log('Connected to Socket.IO server:', socket.current?.id);

@@ -1,63 +1,111 @@
-"use client"
+"use client";
 import { useChat } from "@/context/chat.contex";
-import { FC, useEffect, useRef } from "react";
+import { useUser } from "@/context/user.provider";
+import { chatUser, ChatMessage } from "@/types";
+import { FC, useEffect, useRef, useState } from "react";
 
-// const messages = [
-//   { id: 1, text: "Hello!", sender: "other", time: "9:43 PM" },
-//   {
-//     id: 2,
-//     text: "Invitation to join my WhatsApp group",
-//     sender: "other",
-//     time: "9:45 PM",
-//   },
-//   { id: 3, text: "Happy new Year", sender: "you", time: "7:40 PM" },
-// ];
+const ChatBody: FC<{ selectUser: chatUser }> = ({ selectUser }) => {
+  const { user } = useUser();
+  const { socket, messages, setMessages } = useChat();
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-const ChatBody: FC = () => {
-
-  const {socket, messages,setMessages}= useChat()
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  useEffect(()=>{
-    socket?.on("loadMessageSuccess", ({msg})=>{
-      setMessages(msg)
-    })
-    socket?.on("receiveMessage", (msg)=>{
-      setMessages((prevMsg)=>[...prevMsg, msg])
-    })
-    return ()=>{
-      socket?.off('loadMessageSuccess');
-      socket?.off('receiveMessage');
-    }
-  }, [socket, setMessages])
-
-  // scroll to the latest message
+  // Load and manage messages
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Load messages for the current chat
+    socket?.on(
+      "loadMessageSuccess",
+      ({ messages }: { messages: ChatMessage[] }) => {
+        setMessages(messages);
+      }
+    );
+
+    // Receive a new message
+    socket?.on("receiveMessage", (chatMessage: ChatMessage) => {
+      setMessages((prevMsg) => [...prevMsg, chatMessage]);
+    });
+
+    // Handle typing indicator
+    socket?.on("userTyping", ({ senderId }) => {
+      if (senderId === selectUser._id) setIsTyping(true);
+      setTimeout(() => setIsTyping(false), 2000);
+    });
+
+    return () => {
+      socket?.off("loadMessageSuccess");
+      socket?.off("receiveMessage");
+      socket?.off("userTyping");
+    };
+  }, [socket, setMessages, selectUser]);
+
+  // Scroll to the latest message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Mark unread messages as read
+  useEffect(() => {
+    const unreadMessageIds = messages
+      .filter(
+        (msg) =>
+          msg.receiverId === user?.id && // Message is for the current user
+          msg.isRead === false // Message is unread
+      )
+      .map((msg) => msg._id);
+
+    if (unreadMessageIds.length > 0) {
+      socket?.emit("markAsRead", { messageIds: unreadMessageIds });
+    }
+  }, [messages, user?.id, socket]);
+
+  // Listen for server confirmation of messages being marked as read
+  useEffect(() => {
+    socket?.on("messagesRead", ({ messageIds }: { messageIds: string[] }) => {
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          messageIds.includes(msg._id) ? { ...msg, isRead: true } : msg
+        )
+      );
+    });
+
+    return () => {
+      socket?.off("messagesRead");
+    };
+  }, [socket, setMessages]);
+
   return (
-    <div className="flex-1 overflow-y-scroll p-4 bg-gray-50">
-      {messages.map((msg) => (
-        <div
-          key={msg.id}
-          className={`flex ${
-            msg.senderId === socket?.id  ? "justify-end" : "justify-start"
-          } my-2`}
-        >
+    <div className="flex-1 overflow-y-scroll p-4">
+      {messages &&
+        messages.map((msg) => (
           <div
-            className={`max-w-[70%] p-3 rounded-lg ${
-              msg.senderId === socket?.id 
-                ? "bg-green-500 text-white"
-                : "bg-gray-300 text-black"
-            }`}
+            key={msg._id}
+            className={`flex ${
+              msg.senderId === user?.id ? "justify-end" : "justify-start"
+            } my-2`}
           >
-            <p>{msg.text}</p>
-            <span className="text-xs text-gray-500">{msg.time}</span>
+            <div
+              className={`max-w-[70%] p-3 rounded-lg ${
+                msg.senderId === user?.id
+                  ? "bg-gray-200 text-black"
+                  : "bg-gray-300 text-black"
+              }`}
+            >
+              <p>{msg.content}</p>
+              <span className="text-xs text-gray-500">
+                {new Date(msg.createdAt).toLocaleTimeString()}
+              </span>
+              <span
+                className={`ml-2 ${
+                  msg.isRead ? "text-blue-500" : "text-gray-500"
+                }`}
+              >
+                ✓✓
+              </span>
+            </div>
           </div>
-        </div>
-      ))}
-       <div ref={messagesEndRef}></div>
+        ))}
+      {isTyping && <p className="text-gray-500 italic">User is typing...</p>}
+      <div ref={messagesEndRef}></div>
     </div>
   );
 };

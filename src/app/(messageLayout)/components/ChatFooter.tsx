@@ -4,8 +4,11 @@ import {  useState } from 'react';
 import { Input } from '@nextui-org/react';
 import { Send, Smile } from 'lucide-react';
 import { useChat } from '@/context/chat.contex';
+import { chatUser } from '@/types';
+import { useUser } from '@/context/user.provider';
 
-const ChatFooter= () => {
+const ChatFooter= ({selectUser}: {selectUser:chatUser}) => {
+  const { user } = useUser();
   const { socket, currentRoom } = useChat();
   const [message, setMessage] = useState('');
 
@@ -13,8 +16,8 @@ const ChatFooter= () => {
     if (!message.trim() || !currentRoom) return;
     console.log('Message sent:', message);
     socket?.emit('sendMessage', {
-      senderId: socket.id,
-      receiverId: currentRoom, 
+      senderId: user?.id,
+      receiverId: selectUser?._id, 
       message,
     });
 
